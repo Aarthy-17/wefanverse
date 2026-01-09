@@ -1,0 +1,5 @@
+MYSQL_HOST = 'localhost'
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = 'NiveV@2003'
+MYSQL_DB = 'wefanverse'
+SECRET_KEY = 'weverse_secret_key'

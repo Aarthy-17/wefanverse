@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card mb-4">
+    <div class="card-body text-center">
+        <img src="{{ url_for('static', filename='images/artist.jpg') }}" width="120" class="rounded-circle mb-2">
+        <h4>Artist Name</h4>
+        <p class="text-muted">Official Community</p>
+        <button class="btn btn-outline-primary">Follow</button>
+    </div>
+</div>
+
+<h5>Official Posts</h5>
+
+<div class="alert alert-info">
+    No posts yet.
+</div>
+
+{% endblock %}

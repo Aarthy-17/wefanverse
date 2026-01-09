@@ -1,0 +1,32 @@
+CREATE DATABASE wefanverse;
+USE wefanverse;
+
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(100),
+    email VARCHAR(100),
+    password VARCHAR(255),
+    role ENUM('fan','artist','admin')
+);
+
+CREATE TABLE posts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    content TEXT,
+    sentiment VARCHAR(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+);
+
+CREATE TABLE likes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    post_id INT,
+    user_id INT
+);
+
+CREATE TABLE comments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    post_id INT,
+    user_id INT,
+    comment TEXT
+);

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h3>Admin Dashboard</h3>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h5>Total Users</h5>
+                <h2>{{ users }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h5>Total Posts</h5>
+                <h2>{{ posts }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
