@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="page-title">🔐 Security</h3>
+
+    <div class="card p-4 shadow-sm">
+        <p>Manage your security settings here.</p>
+
+        <!-- Example: Change password, 2FA toggle, etc. -->
+
+        <a href="{{ url_for('artist_auth.settings') }}" class="btn btn-outline-secondary mt-4">
+            ⬅ Back to Settings
+        </a>
+    </div>
+</div>
+
+{% include "artist_settings_style.html" %}
+{% endblock %}

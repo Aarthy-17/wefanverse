@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Parallax Background -->
+<div class="parallax"></div>
+
+<div class="container mt-4">
+
+    <!-- Back to News Feed -->
+    <a href="{{ url_for('news.news_feed') }}" class="btn btn-outline-warning mb-3">
+        ← Back to News
+    </a>
+
+    <!-- News Card -->
+    <div class="card glass text-white shadow-lg mb-4">
+        <div class="card-body">
+            <h2 class="text-warning">{{ news.title }}</h2>
+            <p class="opacity-75">{{ news.created_at.strftime('%b %d, %Y %H:%M') }}</p>
+            <hr>
+            <p class="fs-5">{{ news.description }}</p>
+            {% if news.link %}
+            <a href="{{ news.link }}" target="_blank" class="read-more fw-bold">
+                Read Full Article →
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Next / Previous Navigation -->
+    <div class="d-flex justify-content-between mb-4">
+        {% if prev_news %}
+        <a href="{{ url_for('news.news_detail', news_id=prev_news.id) }}" class="btn btn-outline-warning">
+            ← Previous
+        </a>
+        {% else %}
+        <div></div>
+        {% endif %}
+
+        {% if next_news %}
+        <a href="{{ url_for('news.news_detail', news_id=next_news.id) }}" class="btn btn-outline-warning">
+            Next →
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Fan Comments Section -->
+    <div class="card glass text-white shadow-lg">
+        <div class="card-body">
+
+            <h5 class="text-warning mb-3">Fan Reactions 💬</h5>
+
+            <!-- Post Comment Form -->
+            <form method="POST" class="mb-4">
+                <textarea name="comment" class="form-control mb-2"
+                          placeholder="Share your thoughts..." required></textarea>
+                <button class="btn btn-warning">Post Comment</button>
+            </form>
+
+            <!-- Display Comments -->
+            {% for c in comments %}
+            <div class="mb-3 p-3 rounded bg-dark">
+                <strong class="text-warning">{{ c.username }}</strong>
+                <span class="badge 
+                    {% if c.sentiment=='Positive' %}bg-success
+                    {% elif c.sentiment=='Negative' %}bg-danger
+                    {% else %}bg-secondary{% endif %}">
+                    {{ c.sentiment }}
+                </span>
+                <p class="mt-2">{{ c.comment }}</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Styles -->
+<style>
+.parallax{
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top, rgba(138,43,226,.35), #000);
+  z-index: -1;
+}
+
+.glass{
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,.15);
+}
+
+.read-more {
+  color: #9b59b6;
+  text-decoration: none;
+}
+.read-more:hover {
+  color: #d39aff;
+  text-decoration: underline;
+}
+</style>
+
+{% endblock %}

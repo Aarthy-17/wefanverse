@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.ads-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.ad-card {
+    background: rgba(120,40,200,.15);
+    backdrop-filter: blur(12px);
+    border-radius: 15px;
+    padding: 15px;
+    transition: 0.3s;
+}
+
+.ad-card:hover {
+    transform: translateY(-5px);
+    background: rgba(120,40,200,.25);
+}
+
+.ad-media {
+    width: 100%;
+    height: 180px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.ad-media img,
+.ad-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ad-content {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.ad-date {
+    font-size: 12px;
+    opacity: 0.7;
+}
+</style>
+
+<div class="container mt-4">
+    <h3 class="page-title">🚀 Boosted Ads & Promotions</h3>
+
+    <div class="card p-4 shadow-sm">
+
+        {% if boosted_posts %}
+        <div class="ads-grid">
+
+            {% for post in boosted_posts %}
+            <div class="ad-card">
+
+                <div class="ad-media">
+                    {% if post.media_filename %}
+                        {% if post.media_filename.endswith('.mp4') %}
+                            <video controls>
+                                <source src="{{ url_for('static', filename='uploads/' + post.media_filename) }}">
+                            </video>
+                        {% else %}
+                            <img src="{{ url_for('static', filename='uploads/' + post.media_filename) }}">
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="ad-content">
+                    {{ post.content[:120] }}
+                    {% if post.content|length > 120 %}...{% endif %}
+                </div>
+
+                <div class="ad-date">
+                    📅 {{ post.created_at.strftime('%d %b %Y') }}
+                    <br>
+                    ⏰ {{ post.created_at.strftime('%I:%M %p') }}
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+            <p>No boosted posts yet 🚀</p>
+        {% endif %}
+
+        <a href="{{ url_for('artist_auth.settings') }}" 
+           class="btn btn-outline-secondary mt-4">
+            ⬅ Back to Settings
+        </a>
+
+    </div>
+</div>
+
+{% include "artist_settings_style.html" %}
+{% endblock %}

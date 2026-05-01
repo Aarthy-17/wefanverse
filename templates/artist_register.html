@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login | WeFanVerse</title>
+<title>Artist Sign Up | WeFanVerse</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,15 +18,15 @@ body{
   margin:0;
   font-family:Poppins,system-ui;
   color:#fff;
-  overflow-x:hidden;
   background:#050007;
+  overflow-x:hidden;
 }
 
-/* ===== PARALLAX ===== */
+/* ===== PARALLAX SCENE ===== */
 .scene{
   position:fixed;
   inset:0;
-  perspective:800px;
+  perspective:900px;
   z-index:-3;
 }
 .layer{
@@ -64,12 +64,12 @@ body{
   animation:float 12s linear infinite;
 }
 @keyframes float{
-  from{transform:translateY(110vh); opacity:0}
+  from{transform:translateY(110vh);opacity:0}
   10%{opacity:1}
-  to{transform:translateY(-10vh); opacity:0}
+  to{transform:translateY(-10vh);opacity:0}
 }
 
-/* ===== RIPPLES ===== */
+/* ===== MUSIC RIPPLES ===== */
 .ripples{
   position:fixed;
   inset:0;
@@ -83,8 +83,8 @@ body{
   animation:ripple 6s infinite;
 }
 @keyframes ripple{
-  from{transform:scale(.2); opacity:.6}
-  to{transform:scale(2.5); opacity:0}
+  from{transform:scale(.2);opacity:.6}
+  to{transform:scale(2.5);opacity:0}
 }
 
 /* ===== NAVBAR ===== */
@@ -102,21 +102,22 @@ body{
 }
 .nav-link:hover{
   color:var(--orange)!important;
+  text-shadow:0 0 8px var(--orange);
 }
 
-/* ===== LOGIN ===== */
-.login-wrapper{
+/* ===== REGISTER SECTION ===== */
+.register-wrapper{
   min-height:100vh;
   padding-top:90px;
   display:flex;
   align-items:center;
 }
-.login-image{
+.register-image{
   background:
     linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.4)),
-    url("/static/images/ab1.jpeg") center/cover no-repeat;
+    url("/static/images/register.jpg") center/cover no-repeat;
   border-radius:22px 0 0 22px;
-  min-height:480px;
+  min-height:520px;
 }
 .glass-box{
   background:var(--purple-glass);
@@ -125,6 +126,7 @@ body{
   border:1px solid rgba(255,255,255,.2);
   box-shadow:0 0 45px rgba(138,43,226,.6);
 }
+
 .form-control{
   background:rgba(0,0,0,.55);
   border:1px solid rgba(255,255,255,.25);
@@ -134,6 +136,7 @@ body{
   border-color:var(--orange);
   box-shadow:0 0 10px rgba(255,140,0,.8);
 }
+
 .btn-accent{
   background:linear-gradient(135deg,#ff8c00,#ffb347);
   color:#000;
@@ -142,7 +145,7 @@ body{
 
 /* MOBILE */
 @media(max-width:768px){
-  .login-image{display:none}
+  .register-image{display:none}
   .glass-box{border-radius:22px}
 }
 </style>
@@ -157,12 +160,14 @@ body{
   <div class="layer glow"></div>
 </div>
 
+<!-- PARTICLES -->
 <div class="particles" id="particles"></div>
 
+<!-- RIPPLES -->
 <div class="ripples">
-  <div class="ripple" style="width:200px;height:200px;top:30%;left:40%"></div>
-  <div class="ripple" style="width:300px;height:300px;top:55%;left:55%;animation-delay:2s"></div>
-  <div class="ripple" style="width:150px;height:150px;top:45%;left:30%;animation-delay:4s"></div>
+  <div class="ripple" style="width:220px;height:220px;top:35%;left:45%"></div>
+  <div class="ripple" style="width:320px;height:320px;top:55%;left:60%;animation-delay:2s"></div>
+  <div class="ripple" style="width:180px;height:180px;top:45%;left:30%;animation-delay:4s"></div>
 </div>
 
 <!-- NAVBAR -->
@@ -173,28 +178,33 @@ body{
 <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
 <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
 <li class="nav-item"><a class="nav-link" href="/services">Services</a></li>
-<li class="nav-item ms-2"><a class="btn btn-sm btn-accent" href="/register">Sign Up</a></li>
+<li class="nav-item ms-2"><a class="btn btn-sm btn-accent" href="/artist/login">Artist Login</a></li>
 </ul>
 </div>
 </nav>
 
-<!-- LOGIN -->
-<div class="container login-wrapper">
-<div class="row shadow-lg w-100" style="max-width:900px;margin:auto">
+<!-- ARTIST REGISTER -->
+<div class="container register-wrapper">
+<div class="row shadow-lg w-100" style="max-width:950px;margin:auto">
 
-<div class="col-md-6 login-image"></div>
+<div class="col-md-6 register-image"></div>
 
 <div class="col-md-6 glass-box p-5">
-<h3 class="fw-bold text-warning">Welcome Back ✨</h3>
-<p class="opacity-75 mb-4">Feel the rhythm. Enter the universe.</p>
+<h3 class="fw-bold text-warning">Artist Registration 🎤</h3>
+<p class="opacity-75 mb-4">Enter the WeFanVerse stage</p>
 
-<!-- ✅ WORKING LOGIN FORM -->
-<form method="POST" action="/login">
+<form method="POST" action="/artist/register">
+
+  <input class="form-control mb-3"
+         type="text"
+         name="name"
+         placeholder="Artist / Stage Name"
+         required>
 
   <input class="form-control mb-3"
          type="email"
          name="email"
-         placeholder="Email"
+         placeholder="Artist Email"
          required>
 
   <input class="form-control mb-3"
@@ -203,43 +213,34 @@ body{
          placeholder="Password"
          required>
 
-  <button type="submit" class="btn btn-accent w-100">
-    Login
+  <button type="submit" class="btn btn-accent w-100 mt-2">
+    Register as Artist
   </button>
 </form>
 
 <p class="text-center mt-4">
-New here?
-<a href="/register" class="text-warning fw-bold">Create Account</a>
-<br>
-<a href="{{ url_for('user_routes.forgot_password') }}">
-    Forgot Password?</a>
-
+Already an artist?
+<a href="/artist/login" class="text-warning fw-bold">Login</a>
 </p>
 </div>
 
 </div>
 </div>
 
-<hr class="my-4 opacity-25">
-
-<div class="text-center small">
-  <p class="mb-1">Are you an Artist? 🎤</p>
-  <a href="/artist/login" class="text-warning fw-bold me-2">
-    Artist Login
-  </a>
-  |
-  <a href="/artist/register" class="text-warning fw-bold ms-2">
-    Artist Register
-  </a>
-</div>
-
-
+<!-- FOOTER -->
 <footer class="text-center py-4">
 <p>© 2025 <span class="text-warning fw-bold">WeFanVerse</span></p>
+<div>
+<i class="bi bi-instagram me-3"></i>
+<i class="bi bi-twitter me-3"></i>
+<i class="bi bi-youtube me-3"></i>
+<i class="bi bi-discord"></i>
+</div>
 </footer>
 
+<!-- JS EFFECTS -->
 <script>
+/* PARTICLES */
 const particles=document.getElementById("particles");
 for(let i=0;i<60;i++){
   const p=document.createElement("div");
@@ -249,6 +250,15 @@ for(let i=0;i<60;i++){
   p.style.opacity=Math.random();
   particles.appendChild(p);
 }
+
+/* MOUSE PARALLAX */
+document.addEventListener("mousemove",e=>{
+  const x=(e.clientX/window.innerWidth-.5)*30;
+  const y=(e.clientY/window.innerHeight-.5)*30;
+  document.querySelector(".layer.bg").style.transform=`translate(${x/4}px,${y/4}px)`;
+  document.querySelector(".layer.mid").style.transform=`translate(${x/2}px,${y/2}px)`;
+  document.querySelector(".layer.glow").style.transform=`translate(${x}px,${y}px)`;
+});
 </script>
 
 </body>

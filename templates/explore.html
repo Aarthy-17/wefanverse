@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- PAGE TITLE -->
+<h3 class="mb-4 text-dark fw-bold">Explore Communities</h3>
+
+<!-- GROUP CARDS -->
+<div class="row g-4">
+    <!-- BTS -->
+    <div class="col-md-4 col-sm-6">
+        <div class="card shadow-sm rounded-4 text-center border-0 hover-card">
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='images/s.jpeg') }}" class="mb-3 rounded-circle" alt="BTS" width="150" height="150">
+                <h5 class="fw-bold">BTS</h5>
+                <p class="text-muted">Official Fan Community</p>
+                <a href="/login" class="btn btn-warning fw-bold">Enter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stray Kids -->
+    <div class="col-md-4 col-sm-6">
+        <div class="card shadow-sm rounded-4 text-center border-0 hover-card">
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='images/stray.jpeg') }}" class="mb-3 rounded-circle" alt="Stray Kids" width="150" height="150">
+                <h5 class="fw-bold">Stray Kids</h5>
+                <p class="text-muted">Official Fan Community</p>
+                <a href="/login" class="btn btn-warning fw-bold">Enter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- TXT -->
+    <div class="col-md-4 col-sm-6">
+        <div class="card shadow-sm rounded-4 text-center border-0 hover-card">
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='images/txt1.jpeg') }}" class="mb-3 rounded-circle" alt="TXT" width="150" height="150">
+                <h5 class="fw-bold">TXT</h5>
+                <p class="text-muted">Official Fan Community</p>
+                <a href="/login" class="btn btn-warning fw-bold">Enter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- BLACKPINK -->
+    <div class="col-md-4 col-sm-6">
+        <div class="card shadow-sm rounded-4 text-center border-0 hover-card">
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='images/b.jpg') }}" class="mb-3 rounded-circle" alt="BLACKPINK" width="150" height="150">
+                <h5 class="fw-bold">BLACKPINK</h5>
+                <p class="text-muted">Official Fan Community</p>
+                <a href="/login" class="btn btn-warning fw-bold">Enter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Taylor -->
+    <div class="col-md-4 col-sm-6">
+        <div class="card shadow-sm rounded-4 text-center border-0 hover-card">
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='images/taylor.jpg') }}" class="mb-3 rounded-circle" alt="Taylor" width="150" height="150">
+                <h5 class="fw-bold">Taylor</h5>
+                <p class="text-muted">Official Fan Community</p>
+                <a href="/login" class="btn btn-warning fw-bold">Enter</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Hover Effect -->
+<style>
+.hover-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 20px 50px rgba(255, 122, 24, 0.35);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+</style>
+
+{% endblock %}

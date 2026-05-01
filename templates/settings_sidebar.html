@@ -1,0 +1,51 @@
+<div class="list-group mb-4">
+    <a href="{{ url_for('user_routes.personal_details') }}"
+       class="list-group-item list-group-item-action {% if active_page == 'personal_details' %}active{% endif %}">
+        Personal Details
+    </a>
+
+    <a href="{{ url_for('user_routes.password_security') }}"
+       class="list-group-item list-group-item-action {% if active_page == 'password_security' %}active{% endif %}">
+        Password Security
+    </a>
+
+    <a href="{{ url_for('user_routes.two_factor') }}"
+       class="list-group-item list-group-item-action {% if active_page == 'two_factor' %}active{% endif %}">
+        Two-Factor Authentication
+    </a>
+
+    <a href="{{ url_for('auth.logout') }}"
+       class="list-group-item list-group-item-action text-danger">
+        Logout
+    </a>
+</div>
+
+<style>
+/* Settings Sidebar */
+.list-group-item {
+    background-color: var(--card-bg);
+    color: var(--purple);
+    border: none;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.list-group-item:hover {
+    background-color: rgba(187, 51, 255, 0.25);
+    color: #fff;
+}
+
+.list-group-item.active {
+    background-color: var(--purple) !important;
+    color: #fff !important;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(187, 51, 255, 0.5);
+}
+
+.text-danger:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+    color: #ff4444;
+}
+</style>

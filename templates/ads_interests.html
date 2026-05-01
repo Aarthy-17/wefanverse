@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'success' if category=='success' else 'info' }} alert-dismissible fade show mt-3" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <h3>🎯 Ad Interests</h3>
+    <p>You can manage what type of ads you see based on your interests.</p>
+
+    <!-- Preferences Form -->
+    <form method="POST">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="music" id="music" checked>
+            <label class="form-check-label" for="music">Music</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="fashion" id="fashion">
+            <label class="form-check-label" for="fashion">Fashion</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="movies" id="movies">
+            <label class="form-check-label" for="movies">Movies</label>
+        </div>
+
+        <!-- Buttons -->
+        <div class="mt-3">
+            <button type="submit" class="btn btn-purple me-2">Save</button>
+            <a href="{{ url_for('user_routes.ads_interests') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+        <a href="javascript:history.back()" class="btn btn-secondary w-100 mt-2">
+    ← Back
+</a>
+
+    </form>
+
+    <!-- Boosted Posts -->
+    <hr class="my-4">
+    <h4>🔥 Boosted Posts</h4>
+    <div class="row">
+        {% for post in boosted_posts %}
+            <div class="col-md-4 mb-3">
+                <div class="card bg-dark text-white border-secondary shadow-sm">
+                    {% if post.media_filename and post.media_type == 'image' %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ post.media_filename) }}"
+                             class="card-img-top" style="height:180px; object-fit:cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h6 class="card-title">{{ post.title or "Untitled" }}</h6>
+                        <p class="small text-muted">
+                            By {{ post.artist_name }} |
+                            {{ post.created_at.strftime('%d %b %Y') }}
+                        </p>
+                        {% if post.content %}
+                            <p class="text-white">{{ post.content[:100] }}{% if post.content|length > 100 %}...{% endif %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="text-muted">No boosted posts available at the moment.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

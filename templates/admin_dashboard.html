@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard | WeFanVerse</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+body {
+    background: #050007;
+    color: #fff;
+    font-family: Poppins, sans-serif;
+}
+
+/* NAVBAR */
+.navbar {
+    background: rgba(0,0,0,.85);
+    backdrop-filter: blur(12px);
+}
+.navbar-brand {
+    color: #ff8c00 !important;
+    font-weight: 900;
+}
+.nav-link {
+    color: #fff !important;
+}
+.nav-link:hover {
+    color: #ff8c00 !important;
+}
+
+/* TABS */
+.nav-tabs {
+    border-bottom: none;
+}
+.nav-tabs .nav-link {
+    background: transparent !important;
+    border: none !important;
+    color: white !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+.nav-tabs .nav-link:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+.nav-tabs .nav-link:hover {
+    color: #ff8c00 !important;
+}
+.nav-tabs .nav-link.active {
+    background: rgba(255,140,0,0.15) !important;
+    color: #ff8c00 !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* TABLE */
+.table thead {
+    background: rgba(138,43,226,.6);
+}
+.table tbody tr:hover {
+    background: rgba(255,140,0,.15);
+}
+
+/* PROFILE BOX */
+.profile-box {
+    background: rgba(138,43,226,.3);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* SEARCH */
+.search-bar {
+    margin-bottom: 15px;
+    background: rgba(0,0,0,0.3);
+    color: white;
+    border: none;
+}
+.search-bar::placeholder {
+    color: #ddd;
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top">
+<div class="container">
+    <a class="navbar-brand">WeFanVerse Admin</a>
+    <a class="nav-link" href="{{ url_for('admin.logout') }}">Logout</a>
+</div>
+</nav>
+
+<div class="container" style="padding-top:90px">
+<h2 class="text-warning mb-4">Admin Dashboard</h2>
+
+<!-- ADMIN PROFILE -->
+<div class="profile-box text-white">
+    <h5>Logged in as: {{ admin.name }} ({{ admin.email }})</h5>
+</div>
+
+<!-- TABS -->
+<ul class="nav nav-tabs">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#artists">Artists</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#users">Users</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#userPosts">User Posts</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#artistPosts">Artist Posts</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#comments">Comments</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#reactions">Reactions</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#fanletters">Fan Letters</button></li>
+</ul>
+
+<div class="tab-content mt-4">
+
+<!-- ARTISTS -->
+<div class="tab-pane fade show active" id="artists">
+<input type="text" id="artistSearch" class="form-control search-bar" placeholder="Search Artists by Name or Email">
+<table class="table table-dark table-striped" id="artistTable">
+<thead>
+<tr><th>ID</th><th>Name</th><th>Email</th><th>Status</th><th>Actions</th></tr>
+</thead>
+<tbody>
+{% for a in artists %}
+<tr>
+<td>{{ a.id }}</td>
+<td>{{ a.name }}</td>
+<td>{{ a.email }}</td>
+<td>{{ a.status }}</td>
+<td>
+<a class="btn btn-sm btn-warning" href="{{ url_for('admin.toggle_artist_status', artist_id=a.id) }}">
+{% if a.status == 'active' %}Block{% else %}Unblock{% endif %}
+</a>
+<a class="btn btn-sm btn-danger" href="{{ url_for('admin.delete_artist', artist_id=a.id) }}" onclick="return confirm('Delete artist?')">Delete</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<!-- USERS -->
+<div class="tab-pane fade" id="users">
+<input type="text" id="userSearch" class="form-control search-bar" placeholder="Search Users by Username, Email, or Role">
+<table class="table table-dark table-striped" id="userTable">
+<thead>
+<tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+</thead>
+<tbody>
+{% for u in users %}
+<tr>
+<td>{{ u.id }}</td>
+<td>{{ u.username }}</td>
+<td>{{ u.email }}</td>
+<td>{{ u.role }}</td>
+<td>{{ u.status }}</td>
+<td>
+<a class="btn btn-sm btn-warning" href="{{ url_for('admin.toggle_user_status', user_id=u.id) }}">
+{% if u.status == 'active' %}Block{% else %}Unblock{% endif %}
+</a>
+<a class="btn btn-sm btn-danger" href="{{ url_for('admin.delete_user', user_id=u.id) }}" onclick="return confirm('Delete user?')">Delete</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<!-- USER POSTS -->
+<div class="tab-pane fade" id="userPosts">
+<input type="text" id="userPostSearch" class="form-control search-bar" placeholder="Search User Posts">
+<table class="table table-dark table-striped" id="userPostsTable">
+<thead>
+<tr><th>ID</th><th>Author</th><th>Content</th><th>Media</th><th>Sentiment</th><th>Date</th></tr>
+</thead>
+<tbody>
+{% for p in user_posts %}
+<tr>
+<td>{{ p.id }}</td>
+<td>{{ p.author_name }}</td>
+<td>{{ p.content }}</td>
+<td>{% if p.media_filename %}<a href="{{ url_for('static', filename='uploads/' ~ p.media_filename) }}" target="_blank">View</a>{% else %}-{% endif %}</td>
+<td>
+{% if p.sentiment=='Positive' %}<span class="badge bg-success">Positive</span>
+{% elif p.sentiment=='Negative' %}<span class="badge bg-danger">Negative</span>
+{% else %}<span class="badge bg-secondary">Neutral</span>{% endif %}
+</td>
+<td>{{ p.created_at }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<!-- ARTIST POSTS -->
+<div class="tab-pane fade" id="artistPosts">
+<input type="text" id="artistPostSearch" class="form-control search-bar" placeholder="Search Artist Posts">
+<table class="table table-dark table-striped" id="artistPostsTable">
+<thead>
+<tr><th>ID</th><th>Artist</th><th>Content</th><th>Media</th><th>Sentiment</th><th>Date</th></tr>
+</thead>
+<tbody>
+{% for p in artist_posts %}
+<tr>
+<td>{{ p.id }}</td>
+<td>{{ p.author_name }}</td>
+<td>{{ p.content }}</td>
+<td>{% if p.media_filename %}<a href="{{ url_for('static', filename='uploads/' ~ p.media_filename) }}" target="_blank">View</a>{% else %}-{% endif %}</td>
+<td>
+{% if p.sentiment=='Positive' %}<span class="badge bg-success">Positive</span>
+{% elif p.sentiment=='Negative' %}<span class="badge bg-danger">Negative</span>
+{% else %}<span class="badge bg-secondary">Neutral</span>{% endif %}
+</td>
+<td>{{ p.created_at }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<!-- COMMENTS -->
+<div class="tab-pane fade" id="comments">
+    <input type="text" id="commentSearch" class="form-control search-bar" placeholder="Search Comments by Author or Post">
+
+    <!-- Artist Comments -->
+    <h5>Artist Comments</h5>
+    <table class="table table-dark table-striped">
+    <thead>
+        <tr><th>ID</th><th>Post</th><th>Author</th><th>Comment</th><th>Sentiment</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+    {% for c in comments if c.author_type=='artist' %}
+        <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.post_content }}</td>
+            <td>{{ c.author_name }}</td>
+            <td>{{ c.comment }}</td>
+            <td>
+                {% if c.sentiment=='Positive' %}<span class="badge bg-success">Positive</span>
+                {% elif c.sentiment=='Negative' %}<span class="badge bg-danger">Negative</span>
+                {% else %}<span class="badge bg-secondary">Neutral</span>{% endif %}
+            </td>
+            <td>{{ c.created_at }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    <!-- User Comments -->
+    <h5>User Comments</h5>
+    <table class="table table-dark table-striped">
+    <thead>
+        <tr><th>ID</th><th>Post</th><th>Author</th><th>Comment</th><th>Sentiment</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+    {% for c in comments if c.author_type=='user' %}
+        <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.post_content }}</td>
+            <td>{{ c.author_name }}</td>
+            <td>{{ c.comment }}</td>
+            <td>
+                {% if c.sentiment=='Positive' %}<span class="badge bg-success">Positive</span>
+                {% elif c.sentiment=='Negative' %}<span class="badge bg-danger">Negative</span>
+                {% else %}<span class="badge bg-secondary">Neutral</span>{% endif %}
+            </td>
+            <td>{{ c.created_at }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
+<!-- REACTIONS -->
+<div class="tab-pane fade" id="reactions">
+<input type="text" id="reactionSearch" class="form-control search-bar" placeholder="Search Reactions by Author or Post">
+<table class="table table-dark table-striped" id="reactionTable">
+<thead>
+<tr><th>ID</th><th>Post</th><th>Author</th><th>Reaction</th>{% if 'created_at' in reactions[0] %}<th>Date</th>{% endif %}<th>Actions</th></tr>
+</thead>
+<tbody>
+{% for r in reactions %}
+<tr>
+<td>{{ r.id }}</td>
+<td>{{ r.post_content }}</td>
+<td>{{ r.author_name }}</td>
+<td>{{ r.reaction }}</td>
+{% if 'created_at' in r %}<td>{{ r.created_at }}</td>{% endif %}
+<td>
+<a class="btn btn-sm btn-danger" href="{{ url_for('admin.delete_reaction', reaction_id=r.id) }}" onclick="return confirm('Delete reaction?')">Delete</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+<!-- FAN LETTERS -->
+<!-- FAN LETTERS -->
+<div class="tab-pane fade" id="fanletters">
+
+<input type="text" id="fanLetterSearch" class="form-control search-bar" placeholder="Search Fan Letters">
+
+<table class="table table-dark table-striped" id="fanLetterTable">
+
+<thead>
+<tr>
+<th>ID</th>
+<th>User</th>
+<th>Artist</th>
+<th>Message</th>
+<th>Media</th>
+<th>Sentiment</th>
+<th>Date</th>
+</tr>
+</thead>
+
+<tbody>
+{% for f in fanletters %}
+<tr>
+
+<td>{{ f.id }}</td>
+
+<td>{{ f.sender }}</td>
+
+<td>{{ f.artist }}</td>
+
+<td style="max-width:300px">{{ f.message }}</td>
+
+<!-- MEDIA COLUMN -->
+<td>
+
+{% if f.media_filename %}
+
+    {% if f.media_type == 'image' %}
+
+        <img src="{{ url_for('static', filename='uploads/' ~ f.media_filename) }}"
+             width="80"
+             class="rounded">
+
+    {% elif f.media_type == 'video' %}
+
+        <video width="120" controls>
+            <source src="{{ url_for('static', filename='uploads/' ~ f.media_filename) }}">
+        </video>
+
+    {% endif %}
+
+{% else %}
+-
+{% endif %}
+
+</td>
+
+<!-- SENTIMENT -->
+<td>
+
+{% if f.sentiment=='Positive' %}
+<span class="badge bg-success">Positive</span>
+
+{% elif f.sentiment=='Negative' %}
+<span class="badge bg-danger">Negative</span>
+
+{% else %}
+<span class="badge bg-secondary">Neutral</span>
+{% endif %}
+
+</td>
+
+<td>{{ f.sent_at }}</td>
+
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+</div>
+</div> <!-- tab-content -->
+</div> <!-- container -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// SEARCH FILTER
+function setupSearch(inputId, tableId){
+    document.getElementById(inputId).addEventListener('keyup', function(){
+        const filter=this.value.toLowerCase();
+        const rows=document.getElementById(tableId).getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+        for(let i=0;i<rows.length;i++){
+            rows[i].style.display=rows[i].innerText.toLowerCase().includes(filter)?'':'none';
+        }
+    });
+}
+
+setupSearch('artistSearch','artistTable');
+setupSearch('userSearch','userTable');
+setupSearch('userPostSearch','userPostsTable');
+setupSearch('artistPostSearch','artistPostsTable');
+setupSearch('commentSearch','commentTable');
+setupSearch('reactionSearch','reactionTable');
+setupSearch('fanLetterSearch','fanLetterTable');
+</script>
+
+</body>
+</html>

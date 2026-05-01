@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4" style="max-width: 800px;">
+
+    <h3>📊 Activity Information</h3>
+    <p>
+        Control how your activity is used and view your analytics.
+    </p>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Toggle Form -->
+    <form method="POST" action="{{ url_for('user_routes.activity_information') }}">
+        <div class="form-check mt-3">
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="activity_tracking"
+                   id="activity_tracking"
+                   checked>
+            <label class="form-check-label" for="activity_tracking">
+                Use my activity for personalized ads
+            </label>
+        </div>
+
+        <button type="submit"
+                class="btn mt-3"
+                style="background-color:#7b2cbf; color:white;">
+            Save
+        </button>
+    </form>
+
+    <hr class="my-5">
+
+    <!-- Analytics Numbers -->
+    <h4 class="mb-3">📈 Your Analytics</h4>
+
+    <div class="row text-center mb-4">
+        <div class="col-md-4">
+            <h5>{{ posts|default(0) }}</h5>
+            <p>Posts</p>
+        </div>
+        <div class="col-md-4">
+            <h5>{{ followers|default(0) }}</h5>
+            <p>Followers</p>
+        </div>
+        <div class="col-md-4">
+            <h5>{{ following|default(0) }}</h5>
+            <p>Following</p>
+        </div>
+
+        <div>
+    <a href="javascript:history.back()" class="btn btn-secondary w-100 mt-4">
+    ← Back  </a>
+    </div>
+    </div>
+<div style="max-width: 500px; margin: auto;">
+    <canvas id="activityChart"></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<hr class="my-5">
+
+<h4 class="mb-4">📊 Overall Analytics</h4>
+<canvas id="overallChart" style="max-height:300px;"></canvas>
+
+<hr class="my-5">
+
+<h4 class="mb-4">👥 Followers Analytics</h4>
+<canvas id="followersChart" style="max-height:300px;"></canvas>
+
+<hr class="my-5">
+
+<h4 class="mb-4">💬 Sentiment Analysis</h4>
+<canvas id="sentimentChart" style="max-height:300px;"></canvas>
+
+<hr class="my-5">
+
+<h4 class="mb-4">📈 User Progress</h4>
+<canvas id="progressChart" style="max-height:300px;"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const posts = {{ posts|default(0) }};
+    const followers = {{ followers|default(0) }};
+    const following = {{ following|default(0) }};
+    const positive = {{ positive|default(0) }};
+    const negative = {{ negative|default(0) }};
+    const neutral = {{ neutral|default(0) }};
+
+    // 1️⃣ Overall Pie
+    new Chart(document.getElementById('overallChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Posts', 'Followers', 'Following'],
+            datasets: [{
+                data: [posts, followers, following],
+                backgroundColor: ['#3A86FF','#06D6A0','#F4A261']
+            }]
+        }
+    });
+
+    // 2️⃣ Followers Bar
+    new Chart(document.getElementById('followersChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Followers','Following'],
+            datasets: [{
+                label: 'Count',
+                data: [followers, following],
+                backgroundColor: ['#118AB2','#EF476F']
+            }]
+        }
+    });
+
+    // 3️⃣ Sentiment Doughnut
+    new Chart(document.getElementById('sentimentChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Positive','Neutral','Negative'],
+            datasets: [{
+                data: [positive, neutral, negative],
+                backgroundColor: ['#06D6A0','#FFD166','#EF476F']
+            }]
+        }
+    });
+
+    // 4️⃣ Progress Line (Simple Growth Visual)
+    new Chart(document.getElementById('progressChart'), {
+        type: 'line',
+        data: {
+            labels: ['Posts','Followers','Following'],
+            datasets: [{
+                label: 'User Growth',
+                data: [posts, followers, following],
+                borderColor: '#3A86FF',
+                fill: false,
+                tension: 0.3
+            }]
+        }
+    });
+
+});
+</script>
+
+{% endblock %}

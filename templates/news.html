@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h3 class="text-warning mb-4">Idol News 📰</h3>
+
+<div class="row">
+    {% for item in news_items %}
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark text-white glass shadow-lg h-100">
+            <div class="card-body d-flex flex-column">
+                <h6 class="text-warning fw-bold">{{ item.title }}</h6>
+                <p class="flex-grow-1">
+                    {{ item.description[:120] }}{% if item.description|length > 120 %}...{% endif %}
+                </p>
+                <a href="{{ url_for('news.news_detail', news_id=item.id) }}" class="read-more mt-auto fw-bold">
+                    Read more →
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination Buttons -->
+<div class="d-flex justify-content-between mt-4">
+    {% if prev_page %}
+    <a href="{{ url_for('news.news_feed', page=prev_page) }}" class="btn btn-outline-warning">
+        ← Previous
+    </a>
+    {% else %}
+    <div></div>
+    {% endif %}
+
+    {% if next_page %}
+    <a href="{{ url_for('news.news_feed', page=next_page) }}" class="btn btn-outline-warning">
+        Next →
+    </a>
+    {% endif %}
+</div>
+
+<style>
+.glass{
+  background: rgba(138,43,226,.18);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,.2);
+}
+
+.read-more {
+  color: #9b59b6;
+  text-decoration: none;
+}
+.read-more:hover {
+  color: #d39aff;
+  text-decoration: underline;
+}
+</style>
+
+{% endblock %}

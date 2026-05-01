@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Message Controls | WeFanVerse{% endblock %}
+
+{% block content %}
+<h2 class="text-purple mb-4">💬 Messages & Story Replies</h2>
+
+<div class="card p-4">
+    <h5>Message Controls</h5>
+    <div class="mb-3">
+        <label class="form-label">Who can message you</label>
+        <select class="form-select" id="canMessage">
+            <option {% if settings.can_message == 'Everyone' %}selected{% endif %}>Everyone</option>
+            <option {% if settings.can_message == 'Friends' %}selected{% endif %}>Friends</option>
+            <option {% if settings.can_message == 'No one' %}selected{% endif %}>No one</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Who can add you to groups</label>
+        <select class="form-select" id="canAddGroups">
+            <option {% if settings.can_add_groups == 'Everyone' %}selected{% endif %}>Everyone</option>
+            <option {% if settings.can_add_groups == 'Friends' %}selected{% endif %}>Friends</option>
+            <option {% if settings.can_add_groups == 'No one' %}selected{% endif %}>No one</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Message requests</label>
+        <select class="form-select" id="messageRequests">
+            <option {% if settings.message_requests == 'On' %}selected{% endif %}>On</option>
+            <option {% if settings.message_requests == 'Off' %}selected{% endif %}>Off</option>
+        </select>
+    </div>
+
+    <button class="btn btn-purple">Save Changes</button>
+    <a href="javascript:history.back()" class="btn btn-secondary w-100 mt-2">
+    ← Back
+</a>
+</div>
+{% endblock %}

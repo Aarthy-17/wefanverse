@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Feed | WeFanVerse</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    background:linear-gradient(135deg,#050008,#140024);
+    font-family:Poppins,sans-serif;
+    color:white;
+}
+
+/* SIDEBAR */
+.sidebar{
+    position:fixed;
+    width:240px;
+    height:100%;
+    background:rgba(30,0,60,.88);
+    backdrop-filter:blur(18px);
+    padding:30px 20px;
+}
+
+.sidebar h2{
+    color:#b44cff;
+    font-weight:800;
+    margin-bottom:40px;
+}
+
+.sidebar a{
+    display:block;
+    color:#d1aaff;
+    text-decoration:none;
+    margin:18px 0;
+    font-weight:500;
+}
+
+.sidebar a:hover{ color:white; }
+
+/* MAIN */
+.main{
+    margin-left:260px;
+    padding:40px;
+}
+
+/* FEED HEADER */
+.feed-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.feed-header h1{
+    color:#c45cff;
+    font-weight:700;
+}
+
+/* POSTS GRID */
+.posts{
+    column-count:3;
+    column-gap:25px;
+}
+
+.post-card{
+    break-inside:avoid;
+    background:rgba(40,0,70,.45);
+    backdrop-filter:blur(14px);
+    border-radius:18px;
+    overflow:hidden;
+    margin-bottom:25px;
+}
+
+/* AUTHOR */
+.post-author{
+    padding:14px 16px;
+    font-weight:600;
+    color:#ffb3ff;
+}
+
+/* MEDIA */
+.post-media{
+    width:100%;
+    height:260px;
+    background:rgba(0,0,0,.35);
+}
+
+.post-media img,
+.post-media video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* CONTENT */
+.post-content{
+    padding:15px;
+    font-size:14px;
+}
+
+/* ACTIONS */
+.post-actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 15px 15px;
+}
+
+.action-icons{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.action-icons i{
+    font-size:20px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.action-icons i:hover{
+    color:#ff5ca8;
+}
+
+.heart.liked{
+    color:#ff5ca8;
+}
+
+/* COMMENTS */
+.comments{
+    padding:15px;
+    border-top:1px solid rgba(255,255,255,.1);
+}
+
+.comments input{
+    width:100%;
+    padding:8px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+    margin-bottom:10px;
+}
+
+/* RESPONSIVE */
+@media(max-width:1200px){
+    .posts{ column-count:2; }
+}
+@media(max-width:768px){
+    .sidebar{ display:none; }
+    .main{ margin:0; }
+    .posts{ column-count:1; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>WeFanverse</h2>
+    <a href="{{ url_for('artist_auth.dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('artist_auth.feed') }}">Feed</a>
+    <a href="{{ url_for('artist_auth.artist_notifications') }}">
+🔔 Notifications
+</a>
+     <a href="{{ url_for('artist_auth.live_artists') }}"
+           class="{% if request.endpoint == 'artist_auth.live_artists' %}active-link{% endif %}">
+           Live Artists
+        </a>
+        <!-- GO LIVE BUTTON -->
+    <a href="{{ url_for('artist_auth.start_live') }}" style="
+        background:#ff2e63;
+        color:white;
+        padding:10px 14px;
+        border-radius:10px;
+        font-weight:600;
+        text-align:center;
+        margin-top:10px;">
+        🔴 Go Live
+    </a>
+    <a href="{{ url_for('artist_auth.settings') }}">Settings</a>
+    <a href="{{ url_for('artist_auth.logout') }}">Logout</a>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="feed-header">
+    <h1>Artist's Feed 💜</h1>
+</div>
+<!-- CREATE POST FORM -->
+<div class="post-upload" style="
+    margin-bottom:30px;
+    background: rgba(255,255,255,0.05);
+    padding:20px;
+    border-radius:15px;
+    backdrop-filter: blur(10px);
+">
+    <h3 style="margin-bottom:15px; color:#ffc107;">Create New Post</h3>
+    <form action="{{ url_for('artist_auth.create_post') }}" method="POST" enctype="multipart/form-data">
+        <!-- Post content -->
+        <textarea name="content" 
+                  placeholder="What's on your mind?" 
+                  style="
+                    width:100%;
+                    padding:12px;
+                    border-radius:12px;
+                    background: rgba(0,0,0,0.3);
+                    color:white;
+                    border:none;
+                    resize:none;
+                    font-size:14px;
+                  " rows="3"></textarea>
+        <br><br>
+
+        <!-- Media upload -->
+        <input type="file" name="media_file" accept="image/*,video/mp4" style="
+            color:white;
+            font-size:14px;
+            margin-bottom:10px;
+        ">
+        <br>
+
+        <!-- Submit button -->
+        <button type="submit" style="
+            background:#ff2e63;
+            color:white;
+            padding:10px 20px;
+            border:none;
+            border-radius:12px;
+            font-weight:600;
+            cursor:pointer;
+            transition: 0.2s;
+        " onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+            📤 Post
+        </button>
+    </form>
+</div>
+<div class="posts">
+{% for post in posts %}
+<div class="post-card">
+
+    <div class="post-author">
+        {{ post.author_name }}
+    </div>
+
+    <div class="post-media">
+        {% if post.media_filename %}
+            {% if post.media_filename.endswith('.mp4') %}
+                <video controls>
+                    <source src="{{ url_for('static', filename='uploads/' + post.media_filename) }}">
+                </video>
+            {% else %}
+                <img src="{{ url_for('static', filename='uploads/' + post.media_filename) }}">
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="post-content">
+        {{ post.content }}
+    </div>
+
+    <div class="post-actions">
+        <div class="action-icons">
+            <i class="bi bi-heart heart"
+               onclick="likePost({{ post.id }}, this)"></i>
+            <span id="like-count-{{ post.id }}">{{ post.like_count }}</span>
+
+            <i class="bi bi-chat"
+               onclick="toggleComments({{ post.id }})"></i>
+
+            <i class="bi bi-share"
+               onclick="sharePost({{ post.id }})"></i>
+        </div>
+        <small class="opacity-75">{{ post.created_at }}</small>
+    </div>
+
+    <div class="comments" id="comments-{{ post.id }}" style="display:none;">
+        <form onsubmit="addComment(event, {{ post.id }})">
+            <input type="text"
+                   id="comment-input-{{ post.id }}"
+                   placeholder="Write a comment…">
+        </form>
+
+        <div id="comment-list-{{ post.id }}">
+            {% for c in post.comments %}
+                <p><b>{{ c.username }}</b>: {{ c.comment }}</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endfor %}
+</div>
+
+</div>
+
+<script>
+function likePost(postId, icon){
+    fetch(`/artist/like/${postId}`, { method:'POST' })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById(`like-count-${postId}`).innerText = data.likes;
+        icon.classList.toggle('liked');
+    });
+}
+
+function toggleComments(postId){
+    const el = document.getElementById(`comments-${postId}`);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function addComment(e, postId){
+    e.preventDefault();
+    const input = document.getElementById(`comment-input-${postId}`);
+    if(!input.value.trim()) return;
+
+    fetch(`/artist/comment/${postId}`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ comment: input.value })
+    })
+    .then(res => {
+        if(!res.ok) {
+            throw new Error("Server error");
+        }
+        return res.json();
+    })
+    .then(data => {
+        document.getElementById(`comment-list-${postId}`).innerHTML +=
+            `<p><b>${data.username}</b>: ${data.comment}</p>`;
+        input.value='';
+    })
+    .catch(err => {
+        console.error("Comment Error:", err);
+        alert("Comment failed. Check console.");
+    });
+}
+
+function sharePost(postId){
+    navigator.clipboard.writeText(
+        window.location.origin + `/post/${postId}`
+    );
+    alert("Post link copied 💜");
+}
+</script>
+
+</body>
+</html>

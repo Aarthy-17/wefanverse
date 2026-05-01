@@ -1,0 +1,8 @@
+<h2>Followers</h2>
+{% for user in followers %}
+    <div>
+        <a href="{{ url_for('user_routes.profile_page', user_id=user.id) }}">
+            {{ user.username }}
+        </a>
+    </div>
+{% endfor %}

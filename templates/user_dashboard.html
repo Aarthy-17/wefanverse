@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+/* ====== STYLES (same as your current CSS) ====== */
+/* MAIN WRAPPER */
+.dashboard-wrapper { background: #1a1a2e; color: #fff; padding: 40px; border-radius: 20px; }
+/* PROFILE HEADER */
+.profile-header { display: flex; align-items: center; gap: 40px; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid rgba(187, 51, 255, 0.2); }
+.profile-pic { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid #bb33ff; }
+.profile-info h2 { color: #bb33ff; margin-bottom: 15px; }
+.profile-stats { display: flex; gap: 40px; }
+.profile-stats div { text-align: center; }
+.profile-stats strong { display: block; font-size: 20px; }
+.profile-stats span { font-size: 14px; color: #aaa; }
+/* VIEW TOGGLE */
+.view-toggle { margin-bottom: 30px; }
+.view-toggle button { background: #222038; color: #bb33ff; border: none; padding: 8px 16px; margin-right: 10px; border-radius: 8px; cursor: pointer; }
+.view-toggle button.active { background: #bb33ff; color: white; }
+/* POST CARD */
+.post-card { background: #222038; border-radius: 20px; padding: 20px; margin-bottom: 30px; box-shadow: 0 0 20px rgba(187, 51, 255, 0.1); }
+.post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.sponsored-badge { background: #ffcc00; color: #000; padding: 4px 10px; border-radius: 8px; font-size: 12px; margin-left: 10px; }
+.post-media img, .post-media video { width: 100%; border-radius: 15px; margin-top: 10px; margin-bottom: 15px; }
+.post-actions { display: flex; justify-content: space-between; align-items: center; }
+.action-btn { background: none; border: none; color: #bb33ff; cursor: pointer; margin-right: 10px; }
+.edit-btn { background: #bb33ff; color: white; padding: 5px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; }
+.delete-btn { background: #ff4d4d; color: white; padding: 5px 12px; border-radius: 8px; border: none; font-size: 13px; cursor: pointer; }
+/* GRID VIEW */
+.grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+.grid-item { position: relative; background: #222038; border-radius: 15px; overflow: hidden; cursor: pointer; transition: 0.3s ease; }
+.grid-item:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(187, 51, 255, 0.3); }
+.grid-item img, .grid-item video { width: 100%; height: 250px; object-fit: cover; }
+.grid-overlay { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.7); color: white; text-align: center; padding: 10px; font-size: 14px; display: none; }
+.grid-item:hover .grid-overlay { display: block; }
+.no-post { background: #222038; padding: 20px; border-radius: 15px; text-align: center; color: #aaa; }
+/* LIKE POPUP */
+.like-popup {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: #ff4d6d; color: white; padding: 10px 20px;
+    border-radius: 8px; opacity: 0.9; animation: fadeOut 0.8s forwards; z-index: 1000;
+}
+@keyframes fadeOut { 0% { opacity: 0.9; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); } }
+.liked { color: #ff4d6d; }
+</style>
+
+<div class="container mt-4 dashboard-wrapper">
+
+    <!-- PROFILE HEADER -->
+    <div class="profile-header">
+        <div>
+            {% if user.profile_pic %}
+                <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" class="profile-pic">
+            {% else %}
+                <img src="{{ url_for('static', filename='default.png') }}" class="profile-pic">
+            {% endif %}
+        </div>
+
+        <div class="profile-info">
+            <h2>{{ user.username }} 💜</h2>
+            <div class="profile-stats">
+                <div><strong>{{ stats.posts }}</strong><span>Posts</span></div>
+                <div><strong>{{ stats.followers }}</strong><span>Followers</span></div>
+                <div><strong>{{ stats.following }}</strong><span>Following</span></div>
+                <div><strong>{{ stats.likes }}</strong><span>Total Likes</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW TOGGLE -->
+    <div class="view-toggle">
+        <button onclick="showList()" id="listBtn" class="active">📋 List</button>
+        <button onclick="showGrid()" id="gridBtn">🔲 Grid</button>
+    </div>
+
+    <!-- LIST VIEW -->
+    <div id="listView">
+        {% if posts %}
+            {% for post in posts %}
+            <div class="post-card" id="post-{{ post.id }}">
+                <div class="post-header">
+                    <div>
+                        <strong>You</strong>
+                        <small> • {{ post.created_at.strftime('%d %b %Y, %I:%M %p') if post.created_at }}</small>
+                        {% if post.is_ad == 1 %}<span class="sponsored-badge">Sponsored</span>{% endif %}
+                    </div>
+                    {% if session.get('user_id') == post.user_id %}
+                    <div>
+                        <a href="{{ url_for('user_routes.edit_post', post_id=post.id) }}" class="edit-btn">Edit</a>
+                        <form action="{{ url_for('user_routes.delete_post', post_id=post.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="delete-btn" onclick="return confirm('Delete this post?');">Delete</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if post.content %}<p>{{ post.content }}</p>{% endif %}
+
+                {% if post.media_filename %}
+                <div class="post-media">
+                    {% if post.media_type == 'image' %}
+                        <img src="{{ url_for('static', filename='uploads/' + post.media_filename) }}">
+                    {% elif post.media_type == 'video' %}
+                        <video controls><source src="{{ url_for('static', filename='uploads/' + post.media_filename) }}"></video>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="post-actions">
+                    <div>
+                        <!-- LIKE BUTTON -->
+                        <button class="action-btn like-btn {% if post.user_liked %}liked{% endif %}" data-post-id="{{ post.id }}">
+                            ❤️ <span class="like-count">{{ post.like_count or 0 }}</span>
+                        </button>
+
+                        <!-- COMMENT -->
+                        <a href="{{ url_for('user_routes.view_post', post_id=post.id) }}" class="action-btn">
+                            💬 {{ post.comment_count or 0 }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-post">You haven’t posted anything yet 💜</div>
+        {% endif %}
+    </div>
+
+    <!-- GRID VIEW -->
+    <div id="gridView" style="display:none;">
+        <div class="grid-container">
+            {% for post in posts %}
+            <div class="grid-item">
+                {% if post.media_filename %}
+                    {% if post.media_type == 'image' %}
+                        <img src="{{ url_for('static', filename='uploads/' + post.media_filename) }}">
+                    {% elif post.media_type == 'video' %}
+                        <video><source src="{{ url_for('static', filename='uploads/' + post.media_filename) }}"></video>
+                    {% endif %}
+                {% endif %}
+                <div class="grid-overlay">
+                    ❤️ {{ post.like_count or 0 }} | 💬 {{ post.comment_count or 0 }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+function showGrid() {
+    document.getElementById("listView").style.display = "none";
+    document.getElementById("gridView").style.display = "block";
+    document.getElementById("gridBtn").classList.add("active");
+    document.getElementById("listBtn").classList.remove("active");
+}
+
+function showList() {
+    document.getElementById("listView").style.display = "block";
+    document.getElementById("gridView").style.display = "none";
+    document.getElementById("listBtn").classList.add("active");
+    document.getElementById("gridBtn").classList.remove("active");
+}
+
+// ===== AJAX LIKE FUNCTION =====
+document.querySelectorAll('.like-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        const postId = button.dataset.postId;
+
+        fetch(`/like_post/${postId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                button.querySelector('.like-count').textContent = data.likes;
+                button.classList.toggle('liked', data.liked);
+
+                // Optional popup
+                if (data.liked) {
+                    const popup = document.createElement('div');
+                    popup.textContent = 'Liked!';
+                    popup.className = 'like-popup';
+                    document.body.appendChild(popup);
+                    setTimeout(() => popup.remove(), 800);
+                }
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}
+<style>
+/* LIVE ALERT */
+.live-alert{
+    background: linear-gradient(90deg,#ff0055,#bb33ff);
+    padding:14px;
+    border-radius:12px;
+    margin-bottom:25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:600;
+    box-shadow:0 0 15px rgba(255,0,85,0.4);
+}
+
+.live-alert a{
+    background:white;
+    color:#bb33ff;
+    padding:6px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+}
+</style>
+<!-- LIVE NOTIFICATION -->
+<!-- LIVE NOTIFICATION -->
+{% if live_artists %}
+    {% for artist in live_artists %}
+    <div class="live-alert">
+        <div>
+            🔴 <strong>{{ artist.name }}</strong> is LIVE now!
+        </div>
+
+        <div>
+            <a href="{{ url_for('user_routes.watch_live', artist_id=artist.id) }}">
+                Join Live
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+
+<div class="notification-box">
+    <h5>🔔 Live Notifications</h5>
+
+    {% for n in notifications %}
+        <div class="notify-item">
+            {{ n.message }}
+            <small>{{ n.created_at }}</small>
+        </div>
+    {% endfor %}
+</div>
+<style>
+    .notification-box{
+    background:#fff;
+    border-radius:10px;
+    padding:15px;
+    margin:10px;
+}
+
+.notify-item{
+    padding:8px;
+    border-bottom:1px solid #eee;
+}
+</style>

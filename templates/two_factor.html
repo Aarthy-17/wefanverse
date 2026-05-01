@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Two-Factor Authentication | WeFanVerse{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Settings Sidebar -->
+    <div class="col-md-3">
+        {% include 'settings_sidebar.html' %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9">
+        <h2 class="text-purple mb-4">Two-Factor Authentication</h2>
+
+        {% if message %}
+        <div class="alert alert-purple">
+            {{ message }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="enable_2fa" name="enable_2fa"
+                       {% if user_2fa.two_factor_enabled %}checked{% endif %}>
+                <label class="form-check-label" for="enable_2fa">Enable Two-Factor Authentication</label>
+            </div>
+
+            <div class="mb-3">
+                <label for="phone_or_email" class="form-label">Phone or Email for 2FA</label>
+                <input type="text" class="form-control" id="phone_or_email" name="phone_or_email"
+                       value="{{ user_2fa.two_factor_contact or '' }}"
+                       placeholder="Enter phone number or email">
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-purple me-2">Save</button>
+                <a href="{{ url_for('user_routes.account_center') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+
+        <small class="text-muted mt-2 d-block">
+            After enabling 2FA, you will be required to enter a code sent to your phone or email when logging in.
+        </small>
+    </div>
+</div>
+
+<style>
+.btn-purple {
+    background-color: var(--purple);
+    color: #fff;
+}
+.btn-purple:hover {
+    background-color: #aa29e5;
+    color: #fff;
+}
+.btn-secondary {
+    background-color: #555;
+    color: #fff;
+}
+.btn-secondary:hover {
+    background-color: #444;
+    color: #fff;
+}
+.alert-purple {
+    background-color: rgba(187, 51, 255, 0.2);
+    border-left: 4px solid var(--purple);
+    color: var(--purple);
+    padding: 12px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+</style>
+{% endblock %}

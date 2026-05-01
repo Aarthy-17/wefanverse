@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="page-title">🎤 Live Artists</h3>
+
+    {% if artists %}
+    <div class="row g-3">
+        {% for artist in artists %}
+        <div class="col-md-4">
+            <div class="card p-3 shadow-sm h-100">
+{% if artist.profile_pic %}
+<img src="{{ url_for('static', filename='uploads/' ~ artist.profile_pic) }}" class="artist-img">
+{% else %}
+<img src="{{ url_for('static', filename='uploads/default.png') }}" class="artist-img">
+{% endif %}
+                <h5>{{ artist.name }}</h5>
+                <p>{{ artist.bio or "No bio available" }}</p>
+            <a href="{{ url_for('artist_auth.view_artist_profile', artist_id=artist.id) }}" 
+   class="btn btn-purple view-btn">
+   👤 View Profile
+</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">No live artists at the moment.</div>
+    {% endif %}
+
+    <a href="{{ url_for('artist_auth.dashboard') }}" class="btn btn-outline-secondary mt-4">
+        ⬅ Back to Dashboard
+    </a>
+</div>
+
+<style>
+    .btn-purple {
+        background: linear-gradient(90deg, #6a0dad, #9b59b6);
+        color: #fff;
+        font-weight: 500;
+        border-radius: 10px;
+        border: 1px solid rgba(155, 89, 182, 0.4);
+        transition: all 0.3s ease;
+        padding: 8px 16px;
+    }
+
+    .btn-purple:hover {
+        background: linear-gradient(90deg, #9b59b6, #8e44ad);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
+        color: #fff;
+    }
+
+    .page-title {
+        font-family: 'Roboto', sans-serif;
+        color: #9b59b6;
+        text-shadow: 1px 1px 4px rgba(155, 89, 182, 0.5);
+        margin-bottom: 20px;
+    }
+    .view-btn{
+    display:inline-block;
+    width:100%;
+    text-align:center;
+    margin-top:10px;
+    font-weight:600;
+    letter-spacing:0.5px;
+}
+
+.btn-purple{
+    background: linear-gradient(135deg,#7b2cbf,#9d4edd);
+    color:white;
+    border:none;
+    border-radius:12px;
+    padding:10px 18px;
+    transition: all 0.3s ease;
+    box-shadow:0 4px 12px rgba(155,89,182,0.4);
+}
+
+.btn-purple:hover{
+    background: linear-gradient(135deg,#9d4edd,#c77dff);
+    transform:translateY(-3px) scale(1.02);
+    box-shadow:0 6px 18px rgba(155,89,182,0.6);
+    color:white;
+}
+.artist-img{
+width:80px;
+height:80px;
+border-radius:50%;
+object-fit:cover;
+margin-bottom:10px;
+border:3px solid #9b59b6;
+}
+</style>
+
+{% endblock %}

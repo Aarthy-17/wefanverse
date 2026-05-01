@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="mb-4 page-title">
+        👁 Ads Settings
+    </h3>
+
+    <div class="list-group settings-box">
+
+        <!-- Ad Interests -->
+        <a href="{{ url_for('user_routes.ads_interests') }}"
+           class="list-group-item list-group-item-action custom-purple 
+           {% if request.endpoint == 'user_routes.ads_interests' %}active{% endif %}">
+            🎯 Ad Interests
+        </a>
+
+        <!-- Data from Partners -->
+        <a href="{{ url_for('user_routes.ads_data_partners') }}"
+           class="list-group-item list-group-item-action custom-purple 
+           {% if request.endpoint == 'user_routes.ads_data_partners' %}active{% endif %}">
+            🤝 Data from Partners
+        </a>
+
+        <!-- Activity Information (FIXED ENDPOINT) -->
+        <a href="{{ url_for('user_routes.activity_information') }}"
+           class="list-group-item list-group-item-action custom-purple 
+           {% if request.endpoint == 'user_routes.activity_information' %}active{% endif %}">
+            📊 Activity Information
+        </a>
+
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a href="javascript:history.back()" class="btn btn-secondary w-100 mt-2">
+            ← Back
+        </a>
+    </div>
+
+</div>
+
+<style>
+.page-title {
+    font-family: 'Roboto', sans-serif;
+    color: #9b59b6;
+    text-shadow: 1px 1px 4px rgba(155, 89, 182, 0.5);
+}
+
+.settings-box {
+    font-family: 'Montserrat', sans-serif;
+    max-width: 500px;
+}
+
+.custom-purple {
+    background: linear-gradient(90deg, #6a0dad, #9b59b6);
+    color: #fff !important;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(155, 89, 182, 0.4);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    padding: 14px 22px;
+}
+
+.custom-purple:hover {
+    background: linear-gradient(90deg, #9b59b6, #8e44ad);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(155, 89, 182, 0.4);
+}
+
+.custom-purple.active {
+    background: linear-gradient(90deg, #8e44ad, #d291bc);
+    box-shadow: 0 6px 22px rgba(155, 89, 182, 0.6);
+}
+
+.back-btn {
+    background-color: #555;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background-color: #444;
+    color: #fff;
+}
+</style>
+
+{% endblock %}

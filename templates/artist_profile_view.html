@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="profile-container">
+
+<div class="profile-header">
+
+<img src="{{ url_for('static', filename='uploads/' ~ (artist.profile_pic or 'default.png')) }}"
+     class="artist-img">
+
+<h2>{{ artist.name }}</h2>
+
+<div class="stats">
+
+<span><b>{{ post_count }}</b> Posts</span>
+<span><b>{{ followers }}</b> Followers</span>
+
+</div>
+
+</div>
+
+<hr>
+
+<h3>Posts</h3>
+
+{% for post in posts %}
+
+<div class="post-card">
+
+{% if post.image %}
+<img src="{{ url_for('static', filename='uploads/' + post.image) }}">
+{% endif %}
+
+<p>{{ post.caption }}</p>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}
+<style>
+    .profile-container{
+width:70%;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:10px;
+}
+
+.profile-header{
+text-align:center;
+}
+
+.profile-pic{
+width:150px;
+height:150px;
+border-radius:50%;
+object-fit:cover;
+}
+
+.stats{
+margin-top:10px;
+font-size:18px;
+display:flex;
+justify-content:center;
+gap:30px;
+}
+
+.post-card{
+margin-top:20px;
+padding:15px;
+border:1px solid #ddd;
+border-radius:10px;
+}
+
+.view-btn{
+background:#ff4d6d;
+color:white;
+border:none;
+padding:8px 15px;
+border-radius:5px;
+cursor:pointer;
+}
+</style>

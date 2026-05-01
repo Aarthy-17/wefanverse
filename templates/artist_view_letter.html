@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>View Fan Letter | WeFanVerse</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body {
+    margin:0;
+    background: linear-gradient(135deg,#050008,#140024);
+    font-family: Poppins, sans-serif;
+    color:white;
+}
+
+.main {
+    margin: 40px auto;
+    padding: 20px;
+    max-width: 800px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #ff9cf5;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.back-link:hover {
+    color: #ffc107;
+}
+
+.letter-card {
+    background: rgba(255,255,255,0.06);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.letter-card h2 {
+    margin-top: 0;
+    color: #ff9cf5;
+}
+
+.letter-card p {
+    font-size: 15px;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.letter-meta {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-bottom: 15px;
+}
+
+.letter-media {
+    margin-top: 15px;
+}
+
+.letter-media img,
+.letter-media video {
+    width: 100%;
+    max-height: 400px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+</style>
+</head>
+<body>
+
+<div class="main">
+    <a href="{{ url_for('artist_auth.dashboard') }}" class="back-link">&larr; Back to Dashboard</a>
+
+    <div class="letter-card">
+        <div class="letter-meta">
+            From: {{ letter.username if letter.username else 'Anonymous' }}<br>
+            Sent at: {{ letter.sent_at.strftime('%b %d, %Y %H:%M') if letter.sent_at else 'Unknown' }}
+        </div>
+
+        <h2>Fan Letter 💌</h2>
+        <p>{{ letter.message }}</p>
+
+        {% if letter.media_filename %}
+        <div class="letter-media">
+            {% if letter.media_type == 'image' %}
+                <img src="{{ url_for('static', filename='uploads/' + letter.media_filename) }}" alt="Fan media">
+            {% elif letter.media_type == 'video' %}
+                <video controls>
+                    <source src="{{ url_for('static', filename='uploads/' + letter.media_filename) }}">
+                </video>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>

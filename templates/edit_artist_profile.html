@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+<div class="card mx-auto shadow" style="max-width:550px;">
+<div class="card-body text-center">
+
+<!-- PROFILE IMAGE -->
+
+<img src="{% if artist.profile_pic %}
+{{ url_for('static', filename='uploads/' + artist.profile_pic) }}
+{% else %}
+{{ url_for('static', filename='images/profile_icon.png') }}
+{% endif %}"
+class="rounded-circle mb-3"
+width="120"
+height="120">
+
+<h4>{{ artist.name }}</h4>
+
+<p class="text-muted">{{ artist.bio or "Add a bio..." }}</p>
+
+<hr>
+
+<!-- STATS -->
+
+<div class="d-flex justify-content-around mb-4">
+
+<div>
+<h5>{{ stats.posts }}</h5>
+<small>Posts</small>
+</div>
+
+<div>
+<h5>{{ stats.followers }}</h5>
+<small>Followers</small>
+</div>
+
+<div>
+<h5>{{ stats.following }}</h5>
+<small>Following</small>
+</div>
+
+</div>
+
+<hr>
+
+<h5 class="mb-3">✏ Edit Profile</h5>
+
+<form method="POST" enctype="multipart/form-data">
+
+<div class="mb-3 text-start">
+<label>Name</label>
+<input type="text" name="name" class="form-control" value="{{ artist.name }}">
+</div>
+
+<div class="mb-3 text-start">
+<label>Bio</label>
+<textarea name="bio" class="form-control">{{ artist.bio }}</textarea>
+</div>
+
+<div class="mb-3 text-start">
+<label>Profile Picture</label>
+<input type="file" name="profile_pic" class="form-control">
+</div>
+
+<button class="btn btn-primary w-100">
+Update Profile
+</button>
+
+</form>
+
+</div>
+</div>
+
+</div>
+
+{% endblock %}

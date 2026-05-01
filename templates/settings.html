@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="mb-4" style="font-family: 'Roboto', sans-serif; color: #9b59b6;">
+        ⚙ Settings
+    </h3>
+
+    <div class="list-group" style="font-family: 'Montserrat', sans-serif;">
+
+        <a href="{{ url_for('user_routes.account_center') }}"
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'user_routes.account_center' %}active{% endif %}">
+            👤 Account Center
+        </a>
+
+
+        <a href="{{ url_for('user_routes.privacy_settings') }}" 
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'user_routes.privacy_settings' %}active{% endif %}">
+            🔒 Privacy Settings
+        </a>
+
+        <a href="{{ url_for('user_routes.message_controls') }}" 
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'user_routes.message_controls' %}active{% endif %}">
+            💬 Messages & Story Replies
+        </a>
+
+        <a href="{{ url_for('user_routes.ads_settings') }}"
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'user_routes.ads_settings' %}active{% endif %}">
+            👁 Ads
+        </a>
+
+        <!-- New Security Link -->
+        <a href="{{ url_for('user_routes.security_settings') }}"
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'user_routes.security_settings' %}active{% endif %}">
+            🔐 Security
+        </a>
+
+    </div>
+</div>
+
+<style>
+    /* Purple gradient for all links */
+    .custom-purple {
+        background: linear-gradient(90deg, #6a0dad, #9b59b6);
+        color: #fff !important;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        border: 1px solid rgba(155, 89, 182, 0.4);
+        transition: all 0.3s ease;
+        font-weight: 500;
+        padding: 12px 20px;
+    }
+
+    /* Hover effect */
+    .custom-purple:hover {
+        background: linear-gradient(90deg, #9b59b6, #8e44ad);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
+        color: #fff;
+    }
+
+    /* Active page style */
+    .custom-purple.active {
+        background: linear-gradient(90deg, #8e44ad, #d291bc);
+        color: #fff !important;
+        box-shadow: 0 4px 20px rgba(155, 89, 182, 0.6);
+    }
+
+    /* Title shadow */
+    h3 {
+        text-shadow: 1px 1px 4px rgba(155, 89, 182, 0.5);
+    }
+</style>
+
+{% endblock %}

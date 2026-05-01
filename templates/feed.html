@@ -1,34 +1,274 @@
 {% extends 'base.html' %}
+
+{% block title %}Feed - WeFanVerse{% endblock %}
+
 {% block content %}
 
-<h3 class="mb-3">Community Feed</h3>
+<h1 style="color:#bb33ff;font-weight:700;margin-bottom:30px;">
+Welcome, {{ user.username }} 💜
+</h1>
 
-<div class="card mb-4">
-    <div class="card-body">
-        <form method="POST">
-            <textarea name="content" class="form-control mb-2" placeholder="Share something with fans..." required></textarea>
-            <button class="btn btn-primary">Post</button>
-        </form>
-    </div>
+<!-- STATS -->
+<div style="display:flex;gap:20px;margin-bottom:30px;">
+
+<div style="flex:1;background:#222038;padding:20px;border-radius:15px;text-align:center;">
+<h2 style="color:#bb33ff;">{{ stats.posts }}</h2>
+<p>Posts</p>
 </div>
+
+<div style="flex:1;background:#222038;padding:20px;border-radius:15px;text-align:center;">
+<h2 style="color:#bb33ff;">{{ stats.followers }}</h2>
+<p>Followers</p>
+</div>
+
+<div style="flex:1;background:#222038;padding:20px;border-radius:15px;text-align:center;">
+<h2 style="color:#bb33ff;">{{ stats.following }}</h2>
+<p>Following</p>
+</div>
+
+</div>
+
+
+<!-- CREATE POST -->
+<div style="background:#222038;padding:20px;border-radius:15px;margin-bottom:30px;">
+
+<h3 style="color:#bb33ff;margin-bottom:10px;">Create Post</h3>
+
+<form method="POST"
+action="{{ url_for('user_routes.create_post') }}"
+enctype="multipart/form-data">
+
+<textarea
+name="content"
+placeholder="Share something with fans..."
+required
+style="width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:10px;">
+</textarea>
+
+<input type="file"
+name="media"
+style="margin-bottom:10px;color:white;">
+
+<br>
+
+<button type="submit"
+style="background:#bb33ff;color:white;border:none;padding:8px 15px;border-radius:8px;cursor:pointer;">
+Post 💜
+</button>
+
+</form>
+
+</div>
+
+
+<!-- FEED POSTS -->
+{% if posts %}
 
 {% for post in posts %}
-<div class="card mb-3 shadow-sm">
-    <div class="card-body">
-        <h6 class="fw-bold">{{ post[4] }}</h6>
-        <p>{{ post[1] }}</p>
 
-        {% if post[2] == 'Positive' %}
-            <span class="badge bg-success">Positive</span>
-        {% elif post[2] == 'Negative' %}
-            <span class="badge bg-danger">Negative</span>
-        {% else %}
-            <span class="badge bg-secondary">Neutral</span>
-        {% endif %}
+<div style="background:#222038;padding:20px;border-radius:15px;margin-bottom:25px;">
 
-        <small class="text-muted float-end">{{ post[3] }}</small>
-    </div>
+<!-- SPONSORED -->
+{% if post.is_ad == 1 %}
+<div style="background:#ffc107;color:black;padding:5px 10px;border-radius:6px;display:inline-block;margin-bottom:10px;">
+Sponsored 🚀
 </div>
+{% endif %}
+
+
+<!-- USER -->
+<div style="color:#bb33ff;font-weight:600;">
+
+{{ post.username }}
+
+{% if post.is_artist %}
+<span style="color:#ffc107;font-size:13px;margin-left:5px;">
+✔ Artist
+</span>
+{% endif %}
+
+</div>
+
+
+<!-- MEDIA -->
+{% if post.media_filename %}
+
+{% if post.media_type == 'image' %}
+
+<img src="{{ url_for('static',filename='uploads/'+post.media_filename) }}"
+style="width:100%;border-radius:10px;margin-top:10px;">
+
+{% elif post.media_type == 'video' %}
+
+<video controls style="width:100%;border-radius:10px;margin-top:10px;">
+<source src="{{ url_for('static',filename='uploads/'+post.media_filename) }}">
+</video>
+
+{% endif %}
+
+{% endif %}
+
+
+<!-- CONTENT -->
+<p style="margin-top:10px;color:white;">
+{{ post.content }}
+</p>
+
+
+<!-- META -->
+<small style="color:#bb33ff;">
+{{ post.created_at }}
+</small>
+
+
+<!-- LIKE + COMMENT -->
+<div style="display:flex;gap:20px;margin-top:10px;">
+
+
+<!-- LIKE BUTTON (AJAX) -->
+<button onclick="likePost({{ post.id }})"
+style="background:none;border:none;color:#bb33ff;font-size:18px;cursor:pointer;">
+
+❤️ <span id="likes-{{post.id}}">{{ post.like_count }}</span>
+
+</button>
+
+
+<!-- COMMENT TOGGLE -->
+<button onclick="toggleComment({{post.id}})"
+style="background:none;border:none;color:#bb33ff;font-size:18px;cursor:pointer;">
+
+💬 {{ post.comment_count }}
+
+</button>
+
+</div>
+
+
+<!-- COMMENT SECTION -->
+<div id="comment-box-{{post.id}}"
+style="display:none;margin-top:15px;">
+
+
+<form method="POST"
+action="{{ url_for('user_routes.add_comment', post_id=post.id) }}">
+
+<input type="text"
+name="comment"
+placeholder="Write a comment..."
+required
+style="width:75%;padding:6px;border-radius:6px;border:none;">
+
+<button type="submit"
+style="background:#bb33ff;color:white;border:none;padding:6px 10px;border-radius:6px;">
+Send
+</button>
+
+</form>
+
+
+<!-- SHOW COMMENTS -->
+{% if post.comments %}
+
+<div style="margin-top:10px;">
+
+{% for c in post.comments %}
+
+<div style="background:#1a182b;padding:6px;border-radius:6px;margin-bottom:5px;">
+
+<b style="color:#bb33ff;">{{c.username}}</b>
+
+<span style="color:white;">
+{{c.comment}}
+</span>
+
+</div>
+
 {% endfor %}
+
+</div>
+
+{% endif %}
+
+</div>
+
+
+<!-- BOOST POST -->
+{% if session.user_id == post.user_id %}
+
+<div style="margin-top:15px;background:#2a2745;padding:10px;border-radius:10px;">
+
+<form method="POST"
+action="{{ url_for('user_routes.boost_post',post_id=post.id) }}"
+style="display:flex;gap:10px;">
+
+<input type="number"
+name="budget"
+placeholder="Budget ₹"
+required
+style="padding:6px;border-radius:6px;border:none;width:120px;">
+
+<button type="submit"
+style="background:#ffc107;border:none;padding:6px 10px;border-radius:6px;">
+Boost 🚀
+</button>
+
+</form>
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<p style="text-align:center;color:#bb33ff;">
+No posts yet 💜
+</p>
+
+{% endif %}
+
+
+<script>
+
+/* COMMENT TOGGLE */
+
+function toggleComment(id)
+{
+let box=document.getElementById("comment-box-"+id)
+
+if(box.style.display==="none")
+{
+box.style.display="block"
+}
+else
+{
+box.style.display="none"
+}
+}
+
+
+/* LIKE AJAX */
+
+function likePost(postId)
+{
+fetch("/user/like_post/"+postId,{
+method:"POST"
+})
+.then(response=>response.json())
+.then(data=>{
+
+if(data.success)
+{
+document.getElementById("likes-"+postId).innerText=data.likes
+}
+
+})
+}
+
+</script>
 
 {% endblock %}

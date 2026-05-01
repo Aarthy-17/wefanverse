@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="mb-4" style="font-family: 'Roboto', sans-serif; color: #9b59b6;">
+        ⚙ Artist Settings
+    </h3>
+
+    <div class="list-group" style="font-family: 'Montserrat', sans-serif;">
+
+        <!-- Settings link itself -->
+        <a href="{{ url_for('artist_auth.settings') }}"
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'artist_auth.settings' %}active{% endif %}">
+            ⚙ Settings
+        </a>
+
+            <!-- EDIT PROFILE -->
+         <!-- EDIT PROFILE -->
+        <a href="{{ url_for('artist_auth.edit_profile') }}"
+class="list-group-item list-group-item-action custom-purple">
+✏ Edit Profile
+</a>
+
+
+
+
+
+        <a href="{{ url_for('artist_auth.account_center') }}"
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'artist_auth.artist_account_center' %}active{% endif %}">
+            👤 Account Center
+        </a>
+
+        <a href="{{ url_for('artist_auth.artist_notifications') }}"
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'artist_auth.artist_notifications' %}active{% endif %}">
+            🔔 Notifications
+        </a>
+
+        <a href="{{ url_for('artist_auth.privacy_settings') }}" 
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'artist_auth.privacy_settings' %}active{% endif %}">
+            🔒 Privacy Settings
+        </a>
+
+        <a href="{{ url_for('artist_auth.artist_message_controls') }}" 
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'artist_auth.artist_message_controls' %}active{% endif %}">
+            💬 Message Controls
+        </a>
+
+        <a href="{{ url_for('artist_auth.artist_ads_settings') }}"
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'artist_auth.artist_ads_settings' %}active{% endif %}">
+            👁 Ads & Promotions
+        </a>
+
+        <a href="{{ url_for('artist_auth.artist_security_settings') }}"
+           class="list-group-item list-group-item-action custom-purple {% if request.endpoint == 'artist_auth.artist_security_settings' %}active{% endif %}">
+            🔐 Security
+        </a>
+
+        <a href="{{ url_for('artist_auth.logout') }}"
+           class="list-group-item list-group-item-action custom-purple">
+            🚪 Logout
+        </a>
+
+    </div>
+</div>
+
+<style>
+    /* Purple gradient for all links */
+    .custom-purple {
+        background: linear-gradient(90deg, #6a0dad, #9b59b6);
+        color: #fff !important;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        border: 1px solid rgba(155, 89, 182, 0.4);
+        transition: all 0.3s ease;
+        font-weight: 500;
+        padding: 12px 20px;
+    }
+
+    /* Hover effect */
+    .custom-purple:hover {
+        background: linear-gradient(90deg, #9b59b6, #8e44ad);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
+        color: #fff;
+    }
+
+    /* Active page style */
+    .custom-purple.active {
+        background: linear-gradient(90deg, #8e44ad, #d291bc);
+        color: #fff !important;
+        box-shadow: 0 4px 20px rgba(155, 89, 182, 0.6);
+    }
+
+    /* Title shadow */
+    h3 {
+        text-shadow: 1px 1px 4px rgba(155, 89, 182, 0.5);
+    }
+</style>
+
+{% endblock %}

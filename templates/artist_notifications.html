@@ -1,0 +1,42 @@
+{% extends "artist_base.html" %}
+
+{% block content %}
+
+<h2>Notifications 🔔</h2>
+
+{% for n in notifications %}
+
+<div class="notification-card">
+
+    <b>{{ n.username }}</b>
+
+    {% if n.type == 'fanletter' %}
+        sent you a fan letter 💌
+        <p>{{ n.message }}</p>
+
+    {% elif n.type == 'like' %}
+        {{ n.message }}
+
+    {% endif %}
+
+    <br>
+    <small>{{ n.created_at }}</small>
+
+</div>
+
+{% else %}
+
+<p>No notifications yet</p>
+
+{% endfor %}
+
+{% endblock %}
+<style>
+    .notification-card{
+padding:15px;
+margin-bottom:10px;
+border-radius:8px;
+background:white;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+</style>

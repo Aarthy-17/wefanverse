@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+
+<style>
+.edit-container {
+    background: #1a1a2e;
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 700px;
+    margin: auto;
+}
+
+.edit-container h3 {
+    color: #bb33ff;
+    margin-bottom: 20px;
+}
+
+.edit-container textarea {
+    width: 100%;
+    background: #222038;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    color: white;
+    resize: none;
+}
+
+.edit-container textarea:focus {
+    outline: 2px solid #bb33ff;
+}
+
+.update-btn {
+    background: #bb33ff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: white;
+    margin-top: 15px;
+}
+
+.cancel-btn {
+    background: #444;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: white;
+    margin-left: 10px;
+    text-decoration: none;
+}
+</style>
+
+<div class="container mt-5">
+
+    <div class="edit-container">
+
+        <h3>Edit Your Post 💜</h3>
+
+        <form method="POST">
+
+            <textarea name="content"
+                      rows="5"
+                      required>{{ post.content }}</textarea>
+
+            <br>
+
+            <button type="submit" class="update-btn">
+                Update Post
+            </button>
+
+            <a href="{{ url_for('user_routes.dashboard') }}"
+               class="cancel-btn">
+                Cancel
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

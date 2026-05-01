@@ -1,0 +1,16 @@
+{% for artist in artists %}
+
+<div class="artist-card">
+
+<img src="{{ url_for('static', filename='uploads/' ~ (artist.profile_pic or 'default.png')) }}"
+     class="artist-img">
+
+<h3>{{ artist.name }}</h3>
+
+<a href="{{ url_for('user_routes.view_artist_profile', artist_id=artist.id) }}">
+<button class="view-btn">View Profile</button>
+</a>
+
+</div>
+
+{% endfor %}

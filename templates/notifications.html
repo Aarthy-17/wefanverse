@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications | WeFanVerse{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Back Button -->
+    <button onclick="history.back()" 
+            class="btn btn-outline-light mb-3"
+            style="border: 1px solid rgba(155, 89, 182, 0.6); border-radius: 6px;">
+        ← Back
+    </button>
+
+    <!-- Page Title -->
+    <h2 class="text-purple mb-4" style="font-family: 'Roboto', sans-serif;">
+        🔔 Notifications
+    </h2>
+
+    <!-- Notifications List -->
+    <div class="list-group" style="font-family: 'Montserrat', sans-serif;">
+
+        {% if notifications %}
+            {% for notification in notifications %}
+
+                <div class="list-group-item text-white"
+                     style="background:#222038;
+                            border:1px solid rgba(155, 89, 182, 0.3);
+                            border-radius:8px;
+                            margin-bottom:10px;
+                            padding:15px;">
+
+                    <!-- ICON BASED ON TYPE -->
+                    {% if notification.type == "live_start" %}
+                        🔴 {{ notification.message }}
+
+                    {% elif notification.type == "live_end" %}
+                        ❌ {{ notification.message }}
+
+                    {% elif notification.type == "follow" %}
+                        ❤️ {{ notification.message }}
+
+                    {% elif notification.type == "reaction" %}
+                        👍 {{ notification.message }}
+
+                    {% elif notification.type == "fan_letter" %}
+                        💌 {{ notification.message }}
+
+                    {% else %}
+                        🔔 {{ notification.message }}
+                    {% endif %}
+
+                    <br>
+                    <small class="text-muted">
+                        {{ notification.created_at }}
+                    </small>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="list-group-item text-white"
+                 style="background:#222038;
+                        border:1px solid rgba(155, 89, 182, 0.3);
+                        border-radius:8px;
+                        padding:15px;">
+                You currently have no new notifications.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<style>
+.list-group-item:hover{
+    background: rgba(155, 89, 182, 0.25);
+    transition: 0.3s;
+}
+
+.btn-outline-light:hover{
+    background: rgba(155, 89, 182, 0.3);
+    border-color:#9b59b6;
+}
+</style>
+
+{% endblock %}

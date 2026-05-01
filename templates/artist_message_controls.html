@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="page-title">💬 Message Controls</h3>
+
+    <div class="card p-4 shadow-sm">
+        <label class="form-label">Who can send you messages?</label>
+
+        <select class="form-select mt-2">
+            <option>Everyone</option>
+            <option>Only Followers</option>
+            <option>Nobody</option>
+        </select>
+
+        <a href="{{ url_for('artist_auth.settings') }}" class="btn btn-outline-secondary mt-4">
+            ⬅ Back to Settings
+        </a>
+    </div>
+</div>
+
+{% include "artist_settings_style.html" %}
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container mt-4">
+    <h3 style="color:#b44cff;">📊 Analytics Overview</h3>
+
+    <!-- PIE CHART -->
+    <div class="card p-4 shadow-sm mt-3">
+        <h5>Overall Stats</h5>
+        <canvas id="pieChart" height="120"></canvas>
+    </div>
+
+    <!-- LINE CHART -->
+    <div class="card p-4 shadow-sm mt-3">
+        <h5>Daily Engagement (Last 30 Days)</h5>
+        <canvas id="lineChart" height="120"></canvas>
+    </div>
+
+    <!-- BAR CHART -->
+    <div class="card p-4 shadow-sm mt-3">
+        <h5>Top 5 Popular Posts</h5>
+        <canvas id="barChart" height="120"></canvas>
+    </div>
+
+    <!-- BOOSTED POSTS GRID -->
+    <div class="card p-4 shadow-sm mt-3">
+        <h5>Boosted Posts</h5>
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap:15px;">
+            {% for post in boosted_posts %}
+            <div style="background:#2c0b4f; padding:10px; border-radius:12px; color:white;">
+                <strong>{{ post.content[:50] }}{% if post.content|length>50 %}...{% endif %}</strong>
+                <p style="font-size:12px; margin-top:6px;">
+                    Posted: {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}<br>
+                    Budget: ${{ post.ad_budget if post.ad_budget else 0 }}
+                </p>
+                {% if post.media_filename %}
+                    {% if post.media_filename.endswith('.mp4') %}
+                        <video src="{{ url_for('static', filename='uploads/' + post.media_filename) }}" controls style="width:100%; border-radius:8px;"></video>
+                    {% else %}
+                        <img src="{{ url_for('static', filename='uploads/' + post.media_filename) }}" style="width:100%; border-radius:8px;">
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <a href="{{ url_for('artist_auth.dashboard') }}"
+       class="btn btn-outline-secondary mt-4">
+        ⬅ Back to Dashboard
+    </a>
+</div>
+
+<script>
+    // PIE CHART
+    new Chart(document.getElementById('pieChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Followers','Following','Posts','Reactions'],
+            datasets:[{
+                data: [{{ followers }},{{ following }},{{ posts }},{{ reactions }}],
+                backgroundColor: ['#ff9cf5','#b44cff','#ffc107','#ff6b6b']
+            }]
+        },
+        options:{responsive:true, plugins:{legend:{position:'bottom'}}}
+    });
+
+    // LINE CHART
+    new Chart(document.getElementById('lineChart'), {
+        type:'line',
+        data:{
+            labels: {{ daily_labels|tojson }},
+            datasets:[{
+                label:'Reactions',
+                data: {{ daily_values|tojson }},
+                borderColor:'#ff9cf5',
+                backgroundColor:'rgba(255,156,245,0.2)',
+                fill:true,
+                tension:0.3
+            }]
+        },
+        options:{responsive:true, plugins:{legend:{position:'top'}}}
+    });
+
+    // BAR CHART
+    new Chart(document.getElementById('barChart'), {
+        type:'bar',
+        data:{
+            labels: {{ popular_labels|tojson }},
+            datasets:[{
+                label:'Reactions',
+                data: {{ popular_values|tojson }},
+                backgroundColor:'#b44cff'
+            }]
+        },
+        options:{responsive:true, plugins:{legend:{display:false}}}
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Artist Dashboard | WeFanVerse</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    background: linear-gradient(135deg,#050008,#140024);
+    font-family: Poppins, sans-serif;
+    color: white;
+}
+
+/* SIDEBAR */
+.sidebar {
+    position: fixed;
+    width: 240px;
+    height: 100%;
+    background: rgba(30,0,60,.88);
+    backdrop-filter: blur(18px);
+    padding: 30px 20px;
+    overflow-y: auto;
+}
+
+.sidebar h2 {
+    color: #b44cff;
+    font-weight: 800;
+    margin-bottom: 40px;
+}
+
+.sidebar a {
+    display: block;
+    color: #d1aaff;
+    text-decoration: none;
+    margin: 18px 0;
+    font-weight: 500;
+}
+
+.sidebar a:hover { color:white; }
+
+.sidebar hr {
+    border-color: #8e44ff;
+    opacity: .4;
+}
+
+/* MAIN */
+.main {
+    margin-left: 260px;
+    padding: 40px;
+}
+
+.welcome {
+    font-size: 34px;
+    font-weight: 700;
+    color: #c45cff;
+    margin-bottom: 30px;
+}
+
+/* STATS */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 22px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: rgba(120,40,200,.28);
+    backdrop-filter: blur(14px);
+    border-radius: 18px;
+    padding: 22px;
+    text-align: center;
+}
+
+.stat-card h1 {
+    font-size: 36px;
+    color: #da8cff;
+    margin: 0;
+}
+
+.stat-card p { margin: 5px 0 0; opacity: .85; }
+
+/* POSTS */
+.posts {
+    column-count: 3;
+    column-gap: 25px;
+}
+
+.post-card {
+    break-inside: avoid;
+    margin-bottom: 25px;
+    background: rgba(40,0,70,.45);
+    backdrop-filter: blur(14px);
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.post-media {
+    width: 100%;
+    height: 260px;
+    background: rgba(0,0,0,.3);
+}
+
+.post-media img,
+.post-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post-content {
+    padding: 15px;
+    font-size: 14px;
+}
+
+/* Buttons */
+.boost-btn {
+    background:#ff9cf5;
+    border:none;
+    padding:6px 12px;
+    border-radius:12px;
+    font-size:12px;
+    cursor:pointer;
+    color:black;
+    font-weight:600;
+}
+
+.boost-btn:hover {
+    opacity:.85;
+}
+
+.delete-btn {
+    background-color: #e74c3c; 
+    color: white; 
+    border: none; 
+    padding: 6px 12px; 
+    border-radius: 12px; 
+    cursor: pointer;
+    font-weight: bold;
+    font-size:12px;
+}
+
+.delete-btn:hover {
+    opacity:.85;
+}
+
+/* FAN LETTERS */
+.fan-letters-feed {
+    margin-top: 40px;
+}
+
+.fan-letters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.fan-letter-card {
+    display: block;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 15px;
+    border-radius: 15px;
+    text-decoration: none;
+    color: white;
+    transition: transform 0.2s, background 0.2s;
+    word-wrap: break-word;
+}
+
+.fan-letter-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-4px);
+}
+
+.fan-letter-card strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #ff9cf5;
+}
+
+.fan-letter-card p {
+    font-size: 13px;
+    opacity: 0.85;
+    line-height: 1.3;
+}
+
+/* RESPONSIVE */
+@media(max-width:1200px){
+    .posts { column-count: 2; }
+}
+@media(max-width:768px){
+    .sidebar { display:none; }
+    .main { margin:0; padding:20px; }
+    .posts { column-count: 1; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>WeFanVerse</h2>
+    <a href="{{ url_for('artist_auth.dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('artist_auth.feed') }}">Feed</a>
+    <a href="{{ url_for('artist_auth.artist_notifications') }}">🔔 Notifications</a>
+    <a href="{{ url_for('artist_auth.live_artists') }}">Live Artists</a>
+    <a href="{{ url_for('artist_auth.start_live') }}" style="
+        background:#ff2e63;
+        color:white;
+        padding:10px 14px;
+        border-radius:10px;
+        font-weight:600;
+        text-align:center;
+        margin-top:10px;">
+        🔴 Go Live
+    </a>
+    <a href="{{ url_for('artist_auth.settings') }}">Settings</a>
+    <a href="{{ url_for('artist_auth.logout') }}">Logout</a>
+
+    <hr>
+
+    <h4 style="color:#ffc107;">Top Fans</h4>
+    {% for fan in followers %}
+        <p style="font-size:14px;color:#d1aaff;">
+            {{ fan.username }}
+        </p>
+    {% endfor %}
+</div>
+
+<div class="main">
+
+<div class="welcome">
+    Welcome, {{ artist_name }} 💜
+</div>
+
+<div class="stats">
+    <div class="stat-card">
+        <h1>{{ post_count }}</h1>
+        <p>Posts</p>
+    </div>
+    <div class="stat-card">
+        <h1>{{ fan_count }}</h1>
+        <p>Fans</p>
+    </div>
+    <div class="stat-card">
+        <h1>{{ likes_count }}</h1>
+        <p>Likes ❤️</p>
+    </div>
+    <div class="stat-card">
+        <h1>{{ letters|length }}</h1>
+        <p>Fan Letters</p>
+    </div>
+</div>
+
+<!-- POSTS -->
+<div class="posts">
+{% for post in posts %}
+<div class="post-card">
+
+    <div class="post-media">
+        {% if post.media_filename %}
+            {% if post.media_filename.endswith('.mp4') %}
+                <video controls>
+                    <source src="{{ url_for('static', filename='uploads/' + post.media_filename) }}">
+                </video>
+            {% else %}
+                <img src="{{ url_for('static', filename='uploads/' + post.media_filename) }}">
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="post-content">
+
+        {% if post.is_boosted == 1 %}
+            <div style="margin-bottom:8px;">
+                <span class="boost-badge">🚀 Boosted</span>
+            </div>
+        {% endif %}
+
+        {{ post.content }}<br><br>
+
+        <!-- Buttons Inline -->
+        <div style="display:flex; gap:8px; align-items:center;">
+            <form method="POST" action="{{ url_for('artist_auth.boost_post', post_id=post.id) }}">
+                <button type="submit" class="boost-btn">
+                    {% if post.is_boosted == 1 %}
+                        Unboost
+                    {% else %}
+                        🚀 Boost
+                    {% endif %}
+                </button>
+            </form>
+
+            <form method="POST" action="{{ url_for('artist_auth.delete_post', post_id=post.id) }}">
+                <button type="submit" class="delete-btn"
+                        onclick="return confirm('Are you sure you want to delete this post?')">
+                    🗑 Delete
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+{% endfor %}
+</div>
+
+<!-- FAN LETTERS -->
+<div class="fan-letters-feed">
+    <h2 style="color:#ff9cf5;">Fan Letters 💌</h2>
+    <div class="fan-letters-grid">
+        {% for letter in letters %}
+        <a href="{{ url_for('artist_auth.view_letter', letter_id=letter.id) }}" class="fan-letter-card">
+            <strong>{{ letter.username if letter.username else 'Anonymous' }}</strong>
+            <p>{{ letter.message[:150] ~ ('...' if letter.message|length > 150 else '') }}</p>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+</div>
+</body>
+</html>

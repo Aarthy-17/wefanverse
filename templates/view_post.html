@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}View Post{% endblock %}
+
+{% block content %}
+
+<style>
+.post-container {
+    background: #1a1a2e;
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+}
+
+.comment-box {
+    background: #222038;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.comment-form textarea {
+    background: #222038;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+}
+
+.comment-form button {
+    background: #bb33ff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    color: white;
+    margin-top: 10px;
+}
+</style>
+
+<div class="container mt-4 post-container">
+
+    <!-- POST SECTION -->
+    <h3>Post</h3>
+
+    {% if post.content %}
+        <p>{{ post.content }}</p>
+    {% endif %}
+
+    {% if post.media_filename %}
+        {% if post.media_type == 'image' %}
+            <img src="{{ url_for('static', filename='uploads/' + post.media_filename) }}"
+                 class="img-fluid rounded mb-3">
+        {% elif post.media_type == 'video' %}
+            <video controls class="w-100 mb-3">
+                <source src="{{ url_for('static', filename='uploads/' + post.media_filename) }}">
+            </video>
+        {% endif %}
+    {% endif %}
+
+    <hr>
+
+    <!-- COMMENTS SECTION -->
+    <h4>Comments</h4>
+
+    {% if comments %}
+        {% for comment in comments %}
+        <div class="comment-box">
+            <strong>{{ comment.username }}</strong>
+            <small class="text-muted">
+                • {{ comment.created_at.strftime('%d %b %Y, %I:%M %p') if comment.created_at }}
+            </small>
+            <p class="mt-2">{{ comment.comment }}</p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No comments yet 💜</p>
+    {% endif %}
+
+    <hr>
+
+    <!-- ADD COMMENT -->
+    <form action="{{ url_for('user_routes.add_comment', post_id=post.id) }}"
+          method="POST"
+          class="comment-form">
+
+        <textarea name="comment"
+                  rows="3"
+                  placeholder="Write a comment..."
+                  required></textarea>
+
+        <button type="submit">Post Comment</button>
+    </form>
+
+</div>
+
+{% endblock %}

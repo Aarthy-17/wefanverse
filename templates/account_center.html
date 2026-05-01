@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Account Center | WeFanVerse{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Back Button -->
+    <button onclick="history.back()" 
+            class="btn btn-outline-light mb-3"
+            style="border: 1px solid rgba(155, 89, 182, 0.6); border-radius: 6px;">
+        ← Back
+    </button>
+
+    <!-- Page Title -->
+    <h2 class="text-purple mb-4" style="font-family: 'Roboto', sans-serif;">
+        Account Center
+    </h2>
+
+    <!-- Options List -->
+    <div class="list-group" style="font-family: 'Montserrat', sans-serif;">
+
+        <a href="{{ url_for('user_routes.personal_details') }}"
+           class="list-group-item list-group-item-action text-white"
+           style="background: #222038; border: 1px solid rgba(155, 89, 182, 0.3); border-radius: 8px; margin-bottom: 10px; padding: 15px; transition: 0.3s;">
+            👤 Personal Details
+        </a>
+
+        <a href="{{ url_for('user_routes.password_security') }}"
+           class="list-group-item list-group-item-action text-white"
+           style="background: #222038; border: 1px solid rgba(155, 89, 182, 0.3); border-radius: 8px; margin-bottom: 10px; padding: 15px; transition: 0.3s;">
+            🔒 Password Security
+        </a>
+
+        <a href="{{ url_for('user_routes.two_factor') }}"
+           class="list-group-item list-group-item-action text-white"
+           style="background: #222038; border: 1px solid rgba(155, 89, 182, 0.3); border-radius: 8px; margin-bottom: 10px; padding: 15px; transition: 0.3s;">
+            🛡 Two-Factor Authentication
+        </a>
+
+        <a href="{{ url_for('auth.logout') }}"
+           class="list-group-item list-group-item-action text-danger"
+           style="background: #222038; border: 1px solid rgba(155, 89, 182, 0.3); border-radius: 8px; padding: 15px; transition: 0.3s;">
+            🔓 Logout
+        </a>
+
+    </div>
+
+</div>
+
+<!-- Hover Effect -->
+<style>
+    .list-group-item-action:hover {
+        background: rgba(155, 89, 182, 0.25);
+        color: #ffffff;
+        cursor: pointer;
+    }
+
+    .btn-outline-light:hover {
+        background: rgba(155, 89, 182, 0.3);
+        border-color: #9b59b6;
+    }
+</style>
+
+{% endblock %}

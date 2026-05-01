@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chat | WeFanVerse</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg,#050008,#140024);
+    color: white;
+}
+
+/* ===== HEADER ===== */
+.chat-header {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    background: #0f0f1f;
+    border-bottom: 1px solid #2c2c2c;
+}
+
+.chat-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+    border: 2px solid #d633ff;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-weight: 500;
+}
+
+/* ===== CHAT AREA ===== */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 85vh;
+}
+
+.chat-box {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* ===== MESSAGES ===== */
+.message {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.my-message {
+    justify-content: flex-end;
+}
+
+.other-message {
+    justify-content: flex-start;
+}
+
+.bubble {
+    max-width: 60%;
+    padding: 12px 18px;
+    border-radius: 18px;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+
+.my-message .bubble {
+    background: linear-gradient(45deg,#d633ff,#ff4dff);
+    color: white;
+}
+
+.other-message .bubble {
+    background: #2b2b2b;
+    color: white;
+}
+
+.time {
+    font-size: 11px;
+    margin-top: 6px;
+    opacity: 0.7;
+}
+
+/* ===== INPUT ===== */
+.message-form {
+    display: flex;
+    padding: 15px;
+    background: #0f0f1f;
+    border-top: 1px solid #2c2c2c;
+}
+
+.message-form input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+.message-form button {
+    margin-left: 10px;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(45deg,#d633ff,#ff4dff);
+    color: white;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.message-form button:hover {
+    opacity: 0.85;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="chat-header">
+
+    {% if other_user.profile_pic %}
+
+        {% if other_user.role == 'artist' %}
+            <!-- Artist image from static/images -->
+            <img src="{{ url_for('static', filename='images/' + other_user.profile_pic) }}">
+        {% else %}
+            <!-- User image from static/uploads -->
+            <img src="{{ url_for('static', filename='uploads/' + other_user.profile_pic) }}">
+        {% endif %}
+
+    {% else %}
+        <img src="{{ url_for('static', filename='images/default.png') }}">
+    {% endif %}
+
+    <h3>{{ other_user.username }}</h3>
+</div>
+
+<div class="chat-container">
+
+    <!-- ===== CHAT BOX ===== -->
+    <div class="chat-box">
+
+        {% for msg in messages %}
+            {% if msg.sender_id == session['user_id'] %}
+                <div class="message my-message">
+                    <div class="bubble">
+                        {{ msg.message }}
+                        <div class="time">
+                            {{ msg.created_at.strftime('%d %b %Y %H:%M') }}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="message other-message">
+                    <div class="bubble">
+                        {{ msg.message }}
+                        <div class="time">
+                            {{ msg.created_at.strftime('%d %b %Y %H:%M') }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+
+    <!-- ===== SEND FORM ===== -->
+    <form method="POST" class="message-form">
+        <input type="text" name="message" placeholder="Type your message..." required>
+        <button type="submit">Send</button>
+    </form>
+
+</div>
+
+</body>
+</html>

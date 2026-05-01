@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card mx-auto" style="max-width: 500px;">
+        <div class="card-body text-center position-relative">
+
+            <!-- Profile Image with Edit Icon -->
+            <div class="position-relative d-inline-block">
+                <img src="{% if user.profile_pic %}
+                            {{ url_for('static', filename='uploads/' + user.profile_pic) }}
+                         {% else %}
+                            {{ url_for('static', filename='images/profile_icon.png') }}
+                         {% endif %}"
+                     class="rounded-circle mb-3"
+                     width="120" height="120">
+
+                {% if session['user_id'] == user.id %}
+                <!-- Pencil Edit Icon -->
+                <a href="{{ url_for('user_routes.edit_profile', user_id=user.id) }}"
+                   class="position-absolute bottom-0 end-0 bg-white rounded-circle p-2"
+                   style="transform: translate(25%, 25%); border: 1px solid #ccc;">
+                    <i class="fas fa-pen"></i>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Username & Email -->
+            <h4>{{ user.username }}</h4>
+            <p class="text-muted">{{ user.email }}</p>
+
+            <hr class="border-secondary">
+
+            <!-- Bio -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">{{ user.bio or 'Add a bio...' }}</span>
+                {% if session['user_id'] == user.id %}
+                <a href="{{ url_for('user_routes.edit_profile', user_id=user.id) }}" class="text-primary">
+                    <i class="fas fa-pen"></i>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Stats -->
+            <div class="d-flex justify-content-around mt-4">
+                <div>
+                    <h6>{{ stats.posts }}</h6>
+                    <small>Posts</small>
+                </div>
+                <div>
+                    <h6>{{ stats.followers }}</h6>
+                    <small>Followers</small>
+                </div>
+                <div>
+                    <h6>{{ stats.following }}</h6>
+                    <small>Following</small>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

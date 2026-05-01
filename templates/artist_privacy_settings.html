@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="mb-4" style="font-family: 'Roboto', sans-serif; color: #9b59b6;">
+        🔒 Privacy Settings
+    </h3>
+
+    <div class="card p-4 shadow-sm">
+        <form method="POST" action="{{ url_for('artist_auth.privacy_settings') }}">
+            <!-- Private Account -->
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="is_private"
+                       {% if artist.is_private == 1 %}checked{% endif %}>
+                <label class="form-check-label">
+                    Private Account
+                </label>
+            </div>
+
+            <!-- Disable Fan Letters -->
+            <div class="form-check mt-3">
+                <input class="form-check-input" type="checkbox" name="disable_fan_letters"
+                       {% if artist.disable_fan_letters == 1 %}checked{% endif %}>
+                <label class="form-check-label">
+                    Disable Fan Letters
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-purple mt-4">
+                💾 Save Changes
+            </button>
+        </form>
+
+        <a href="{{ url_for('artist_auth.settings') }}" class="btn btn-outline-secondary mt-3">
+            ⬅ Back to Settings
+        </a>
+    </div>
+</div>
+
+{% include "artist_settings_style.html" %}
+{% endblock %}

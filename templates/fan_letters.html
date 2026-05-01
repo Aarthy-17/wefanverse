@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h3 class="mb-4 text-warning">Send a Fan Letter ✨</h3>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <!-- Glassmorphism box -->
+            <div class="p-4 glass-box shadow-lg">
+
+                <!-- ✅ Fan Letter Form -->
+                <form method="POST" action="{{ url_for('post.send_fan_letter') }}" enctype="multipart/form-data">
+
+                    <div class="mb-3">
+                        <label class="form-label text-light">Artist / Group Name</label>
+                        <input type="text" name="artist_name" class="form-control" placeholder="e.g., BTS, Jungkook" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-light">Message</label>
+                        <textarea name="message" class="form-control" rows="4" placeholder="Write your message..." required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-light">Upload Image/Video (optional)</label>
+                        <input type="file" name="media_file" class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn btn-accent w-100">Send Fan Letter 💌</button>
+
+                </form>
+            </div>
+
+            <!-- Display sent fan letters -->
+            <h4 class="mt-5 text-warning">Your Sent Letters</h4>
+            {% if letters %}
+                {% for letter in letters %}
+                    <div class="card bg-dark text-white mb-3 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="fw-bold text-orange">{{ letter.artist_name }}</h6>
+
+                            <!-- Sentiment Badge -->
+                            <span class="badge 
+                                {% if letter.sentiment=='Positive' %}bg-success
+                                {% elif letter.sentiment=='Negative' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ letter.sentiment }}
+                            </span>
+
+                            <p class="mt-2">{{ letter.message }}</p>
+                            {% if letter.media_filename %}
+                                {% if letter.media_type == 'image' %}
+                                    <img src="{{ url_for('static', filename='uploads/' ~ letter.media_filename) }}" class="img-fluid rounded mb-2">
+                                {% elif letter.media_type == 'video' %}
+                                    <video src="{{ url_for('static', filename='uploads/' ~ letter.media_filename) }}" controls class="w-100 mb-2"></video>
+                                {% endif %}
+                            {% endif %}
+                            <small class="text-muted">Sent at {{ letter.sent_at }}</small>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">You haven't sent any fan letters yet.</p>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<style>
+.glass-box {
+    background: rgba(138,43,226,.18);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 12px;
+    padding: 2rem;
+}
+</style>
+
+{% endblock %}

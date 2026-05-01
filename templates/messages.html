@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% block title %}Messages | WeFanVerse{% endblock %}
+
+{% block content %}
+<h2 class="text-purple mb-4">Messages</h2>
+
+<!-- 🔍 Search -->
+<div class="mb-4">
+    <input type="text" id="searchInput" class="form-control" placeholder="Search users or artists...">
+    <ul class="list-group mt-2" id="searchResults"></ul>
+</div>
+
+<!-- 💬 Chat List -->
+<div class="list-group mb-5">
+    {% for chat in chats %}
+        <a href="{{ url_for('user_routes.chat_page', other_user_id=chat['id']) }}"
+           class="list-group-item list-group-item-action bg-dark text-white border-secondary d-flex align-items-center">
+
+            <!-- Profile Image -->
+            <img src="{% if chat.profile_pic %}
+                        {% if chat.is_artist %}
+                            {{ url_for('static', filename='images/' ~ chat.profile_pic) }}
+                        {% else %}
+                            {{ url_for('static', filename='uploads/' ~ chat.profile_pic) }}
+                        {% endif %}
+                     {% else %}
+                        {{ url_for('static', filename='images/profile_icon.png') }}
+                     {% endif %}"
+                 class="rounded-circle me-2"
+                 style="width:35px; height:35px; object-fit:cover;">
+
+            <div class="flex-grow-1">
+                <strong>{{ chat.name }}</strong>
+                {% if chat.is_artist %} 🎤{% endif %}
+                <br>
+                <small class="text-muted">{{ chat.last_message or '' }}</small>
+            </div>
+        </a>
+    {% else %}
+        <p class="text-muted">No conversations yet.</p>
+    {% endfor %}
+</div>
+
+<hr class="my-4">
+
+<!-- 🎤 Suggested Artists -->
+<h3 class="text-purple mb-3">Suggested Artists</h3>
+<div class="row">
+    {% for artist in suggested_artists %}
+        <div class="col-md-4 mb-4">
+            <div class="card text-center bg-dark border-secondary shadow-lg">
+
+                <!-- Artist Image -->
+                <img src="{% if artist.profile_pic %}
+                            {{ url_for('static', filename='images/' ~ artist.profile_pic) }}
+                         {% else %}
+                            {{ url_for('static', filename='images/artist_icon.png') }}
+                         {% endif %}"
+                     class="rounded-circle mx-auto mt-3"
+                     style="width:110px; height:110px; object-fit:cover; border:3px solid #bb33ff;"
+                     onerror="this.src='{{ url_for('static', filename='images/artist_icon.png') }}';">
+
+                <div class="card-body">
+                    <h5 class="card-title text-white">{{ artist.name }}</h5>
+
+                    <p class="small text-muted mb-2">
+                        Followers:
+                        <span id="followers-{{ artist.id }}">
+                            {{ artist.followers_count }}
+                        </span>
+                    </p>
+
+                    <button class="btn btn-sm follow-btn 
+                        {% if artist.is_following %}btn-success{% else %}btn-primary{% endif %}"
+                        data-id="{{ artist.id }}">
+
+                        {% if artist.is_following %}
+                            Following 💜
+                        {% else %}
+                            Follow
+                        {% endif %}
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p class="text-muted">No suggested artists at the moment.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    // 💜 Follow / Unfollow (works for static & dynamic buttons)
+    document.addEventListener("click", async function(e) {
+        if(e.target && e.target.classList.contains("follow-btn")) {
+            const btn = e.target;
+            const artistId = btn.dataset.id;
+            const followerSpan = document.getElementById("followers-" + artistId);
+
+            try {
+                const res = await fetch(`/user/follow/${artistId}`, { method: "POST" });
+                const data = await res.json();
+
+                if(data.error) {
+                    alert("Login required to follow artists!");
+                    return;
+                }
+
+                if(data.status === "followed"){
+                    btn.textContent = "Following 💜";
+                    btn.classList.remove("btn-primary");
+                    btn.classList.add("btn-success");
+                } else {
+                    btn.textContent = "Follow";
+                    btn.classList.remove("btn-success");
+                    btn.classList.add("btn-primary");
+                }
+
+                if(followerSpan) followerSpan.textContent = data.followers;
+
+            } catch(err) {
+                console.error(err);
+            }
+        }
+    });
+
+    // 🔍 Live Search
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+
+    searchInput.addEventListener('input', async () => {
+        const query = searchInput.value.trim();
+        if (!query) {
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        try {
+            const res = await fetch(`/user/search?q=${query}`);
+            const data = await res.json();
+            searchResults.innerHTML = '';
+
+            data.results.forEach(r => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex align-items-center justify-content-between bg-dark text-white border-secondary';
+
+                const avatar = document.createElement('img');
+                avatar.className = 'rounded-circle me-2';
+                avatar.style.width = '35px';
+                avatar.style.height = '35px';
+                avatar.style.objectFit = 'cover';
+                avatar.src = r.profile_pic
+                    ? r.type === 'artist' ? `/static/images/${r.profile_pic}` : `/static/uploads/${r.profile_pic}`
+                    : r.type === 'artist' ? `/static/images/artist_icon.png` : `/static/images/profile_icon.png`;
+
+                const nameSpan = document.createElement('span');
+                nameSpan.innerHTML = r.name + (r.type === 'artist' ? ' 🎤' : '');
+
+                const messageBtn = document.createElement('a');
+                messageBtn.href = `/user/messages/${r.id}`;
+                messageBtn.className = 'btn btn-sm btn-outline-light';
+                messageBtn.textContent = 'Message';
+
+                const leftDiv = document.createElement('div');
+                leftDiv.className = 'd-flex align-items-center';
+                leftDiv.appendChild(avatar);
+                leftDiv.appendChild(nameSpan);
+
+                li.appendChild(leftDiv);
+                li.appendChild(messageBtn);
+
+                searchResults.appendChild(li);
+            });
+
+        } catch(err) {
+            console.error(err);
+        }
+    });
+
+});
+</script>
+{% endblock %}

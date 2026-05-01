@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Suggested Artists | WeFanVerse{% endblock %}
+
+{% block content %}
+<h2 class="text-purple mb-4">Suggested Artists</h2>
+
+<div class="row">
+    {% for artist in artists %}
+        <div class="col-md-3 mb-4">
+            <div class="card text-center shadow-sm">
+                <!-- Artist Profile Picture -->
+                <img src="{{ url_for('static', filename='images/' ~ (artist.profile_pic or 'artist_icon.png')) }}"
+                     class="card-img-top rounded-circle mx-auto mt-3"
+                     style="width:100px; height:100px; object-fit:cover;">
+
+                <div class="card-body">
+                    <!-- Artist Name -->
+                    <h5 class="card-title">{{ artist.name }}</h5>
+
+                    <!-- Follow / Following Button -->
+                    <button class="btn btn-sm {% if artist.is_following %}btn-success{% else %}btn-primary{% endif %} follow-btn"
+                            data-id="{{ artist.id }}">
+                        {% if artist.is_following %}Following{% else %}Follow{% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p>No suggested artists at the moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const buttons = document.querySelectorAll(".follow-btn");
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", function() {
+            const artistId = btn.dataset.id;
+
+            fetch(`/user/follow/${artistId}`, { method: "POST" })
+            .then(res => res.json())
+            .then(resp => {
+                if(resp.status === "followed") {
+                    btn.textContent = "Following";
+                    btn.classList.remove("btn-primary");
+                    btn.classList.add("btn-success");
+                } else if(resp.status === "unfollowed") {
+                    btn.textContent = "Follow";
+                    btn.classList.remove("btn-success");
+                    btn.classList.add("btn-primary");
+                }
+            })
+            .catch(err => console.error(err));
+        });
+    });
+});
+</script>
+{% endblock %}

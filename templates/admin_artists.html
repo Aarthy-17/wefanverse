@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Manage Artists</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+<div class="container mt-5">
+<h3>Registered Artists</h3>
+
+<table class="table table-dark table-hover mt-4">
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+{% for artist in artists %}
+<tr>
+<td>{{ artist.id }}</td>
+<td>{{ artist.name }}</td>
+<td>{{ artist.email }}</td>
+<td>
+<a href="{{ url_for('admin.delete_artist', artist_id=artist.id) }}"
+   class="btn btn-sm btn-danger"
+   onclick="return confirm('Delete this artist?')">
+Delete
+</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+<a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Back</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4" style="max-width: 600px;">
+
+    <h3 class="mb-3">🤝 Data from Partners</h3>
+    <p >
+        We may use information from trusted partners to show you relevant ads.
+    </p>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Form -->
+    <form method="POST" action="{{ url_for('user_routes.ads_data_partners') }}">
+
+        <div class="form-check mt-3">
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="partner_data"
+                   id="partner_data"
+                   checked>
+            <label class="form-check-label" for="partner_data">
+                Allow data from partners for better ad personalization
+            </label>
+        </div>
+
+        <!-- Buttons -->
+        <div class="mt-4 d-flex justify-content-between">
+            
+            <!-- Back Button -->
+            <a href="{{ url_for('user_routes.ads_settings') }}"
+               class="btn btn-secondary">
+                ← Back
+            </a>
+
+            <!-- Save Button -->
+            <button type="submit"
+                    class="btn"
+                    style="background-color:#7b2cbf; color:white;">
+                Save
+            </button>
+
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

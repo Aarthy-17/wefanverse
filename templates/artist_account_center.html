@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="settings-container">
+
+<a href="{{ url_for('artist_auth.settings') }}" class="back-btn">← Back</a>
+
+    <h1 class="page-title">Account Center</h1>
+
+    <div class="settings-box"
+     onclick="window.location='{{ url_for('artist_auth.personal_details') }}'">
+    👤 Personal Details
+</div>
+
+<div class="settings-box"
+     onclick="window.location='{{ url_for('artist_auth.password_security') }}'">
+    🔐 Password Security
+</div>
+
+<div class="settings-box"
+     onclick="window.location='{{ url_for('artist_auth.two_factor_auth') }}'">
+    🛡 Two-Factor Authentication
+</div>
+
+<div class="settings-box logout"
+     onclick="window.location='{{ url_for('artist_auth.logout') }}'">
+    🔓 Logout
+</div>
+
+</div>
+
+<style>
+.settings-container {
+    max-width: 800px;
+}
+
+.page-title {
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 6px 14px;
+    border: 1px solid #bb33ff;
+    border-radius: 8px;
+    color: #bb33ff;
+    text-decoration: none;
+}
+
+.back-btn:hover {
+    background: #bb33ff;
+    color: white;
+}
+
+.settings-box {
+    border: 1px solid rgba(187, 51, 255, 0.4);
+    padding: 18px 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    background-color: rgba(255, 255, 255, 0.02);
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.settings-box:hover {
+    background-color: rgba(187, 51, 255, 0.15);
+    border-color: #bb33ff;
+}
+
+.logout {
+    color: #ff4d6d;
+    border-color: rgba(255, 77, 109, 0.5);
+}
+
+.logout:hover {
+    background-color: rgba(255, 77, 109, 0.15);
+}
+</style>
+
+{% endblock %}
