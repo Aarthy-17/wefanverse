@@ -51,3 +51,12 @@ class UserModel:
         users = cur.fetchall()
         cur.close()
         return users
+    
+    @staticmethod
+    def reset_password(email, new_password):
+         hashed_password = generate_password_hash(new_password)
+         cur = mysql.connection.cursor()
+         cur.execute( "UPDATE users SET password=%s WHERE email=%s",(hashed_password, email))
+         mysql.connection.commit()
+         cur.close()
+
